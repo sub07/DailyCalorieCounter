@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Calorie</string>
+    <string name="clear_records">Clear records</string>
+    <string name="dashboard_left">What\'s left ?</string>
+    <string name="dashboard_dialog_food_label">Food</string>
+    <string name="dashboard_dialog_food_placeholder">Choose your food</string>
+    <string name="dashboard_dialog_mass_label">Record mass</string>
+    <string name="cancel">Cancel</string>
+    <string name="add">Add</string>
+    <string name="food_db_empty">No food in the database yet, click the add button below</string>
+    <string name="food_db_add_dialog_name_label">Food name</string>
+    <string name="food_db_add_dialog_name_placeholder">New food name</string>
+    <string name="edit">Edit</string>
+    <string name="create">Create</string>
+    <string name="kcal_for_100g">kcal for 100g</string>
+    <string name="no_record">No record yet, go to the dashboard and add one</string>
+    <string name="goal_label">Daily Calorie Goal</string>
+    <string name="dashboard_screen_name">Dashboard</string>
+    <string name="record_screen_name">Records</string>
+    <string name="database_screen_name">Database</string>
+    <string name="settings_screen_name">Settings</string>
+    <string name="dashboard_kcal_left">%1$d kcal%2$sleft</string>
+    <string name="dashboard_consumed_kcal">You consumed %1$d kcal</string>
+    <string name="records_mass">%1$dg of %2$s</string>
+    <string name="entry_kcal">%1$d kcal for 100g</string>
+    <string name="welcome_screen_name">Welcome</string>
+</resources>

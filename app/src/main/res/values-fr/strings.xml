@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Calorie</string>
+    <string name="clear_records">Supprimer les saisies</string>
+    <string name="dashboard_left">Où en êtes-vous ?</string>
+    <string name="dashboard_dialog_food_label">Aliment</string>
+    <string name="dashboard_dialog_food_placeholder">Choisissez un aliment</string>
+    <string name="dashboard_dialog_mass_label">Quantité d\'aliment (g)</string>
+    <string name="cancel">Annuler</string>
+    <string name="add">Ajouter</string>
+    <string name="food_db_empty">Pas d\'aliment dans la base de données, ajoutez en un en cliquant sur le bouton dessous</string>
+    <string name="food_db_add_dialog_name_label">Nom de l\'aliment</string>
+    <string name="food_db_add_dialog_name_placeholder">Nom du nouvel aliment</string>
+    <string name="edit">Modifier</string>
+    <string name="create">Créer</string>
+    <string name="kcal_for_100g">kcal pour 100g</string>
+    <string name="no_record">Pas encore de saisie, allez sur le dashboard pour en ajouter</string>
+    <string name="goal_label">Objectif de Calories quotidien</string>
+    <string name="dashboard_screen_name">Dashboard</string>
+    <string name="record_screen_name">Saisies</string>
+    <string name="database_screen_name">Aliments</string>
+    <string name="settings_screen_name">Paramètres</string>
+    <string name="dashboard_kcal_left">%1$d kcal%2$srestante</string>
+    <string name="dashboard_consumed_kcal">Vous avez consommé %1$d kcal</string>
+    <string name="records_mass">%1$dg de %2$s</string>
+    <string name="entry_kcal">%1$d kcal pour 100g</string>
+    <string name="welcome_screen_name">Bienvenue</string>
+</resources>

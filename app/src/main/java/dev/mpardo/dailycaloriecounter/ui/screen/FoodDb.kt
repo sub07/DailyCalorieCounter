@@ -42,7 +42,9 @@ fun FoodCalDbListScreen(
     
     if (foods.isEmpty()) {
         Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
-            Row(modifier = Modifier.fillMaxWidth().padding(8.dp), horizontalArrangement = Arrangement.Center) {
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp), horizontalArrangement = Arrangement.Center) {
                 Text(
                     text = stringResource(R.string.food_db_empty),
                     style = MaterialTheme.typography.body1.copy(textAlign = TextAlign.Center)
@@ -73,7 +75,10 @@ fun FoodCalDbListScreen(
         }
     }
     
-    Column(verticalArrangement = Arrangement.Bottom, modifier = Modifier.fillMaxHeight().fillMaxWidth().padding(24.dp)) {
+    Column(verticalArrangement = Arrangement.Bottom, modifier = Modifier
+        .fillMaxHeight()
+        .fillMaxWidth()
+        .padding(24.dp)) {
         Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
             FloatingActionButton(onClick = { showAddFoodDialog = true }) {
                 Icon(Icons.Filled.Add, "Add food")
@@ -106,7 +111,10 @@ fun FoodCalDbListScreen(
 @Composable
 fun FoodDbItem(item: FoodEntry, onEdit: () -> Unit, onDelete: () -> Unit) {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Column(modifier = Modifier.align(Alignment.CenterVertically).padding(8.dp).fillMaxWidth(0.7f)) {
+        Column(modifier = Modifier
+            .align(Alignment.CenterVertically)
+            .padding(8.dp)
+            .fillMaxWidth(0.7f)) {
             Text(
                 item.name,
                 style = MaterialTheme.typography.body1,
@@ -205,7 +213,10 @@ fun EditFoodDialog(
                 Row(modifier = Modifier.align(Alignment.End)) {
                     TextButton(onDismiss) { Text(stringResource(R.string.cancel), color = contentColorFor(MaterialTheme.colors.background)) }
                     if (foodEntry == null) {
-                        TextButton({ onValidate(FoodEntry(-1, name.text, getCalorie())) }, enabled = canConfirm) { Text(stringResource(R.string.create)) }
+                        TextButton(
+                            { onValidate(FoodEntry(-1, name.text, getCalorie())) },
+                            enabled = canConfirm
+                        ) { Text(stringResource(R.string.create)) }
                     } else {
                         TextButton(
                             onClick = {

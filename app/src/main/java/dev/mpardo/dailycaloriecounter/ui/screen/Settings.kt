@@ -25,7 +25,10 @@ fun SettingsScreen(
     Column {
         SettingsItem {
             Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(stringResource(R.string.goal_label), modifier = Modifier.align(Alignment.CenterVertically).padding(8.dp).fillMaxWidth(0.6f))
+                Text(stringResource(R.string.goal_label), modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .padding(8.dp)
+                    .fillMaxWidth(0.6f))
                 TextButton({ showDailyGoalDialog = true }, modifier = Modifier.align(Alignment.CenterVertically)) {
                     Text("$dailyGoal kcal")
                 }
@@ -47,7 +50,9 @@ fun SettingsScreen(
 
 @Composable
 fun SettingsItem(content: @Composable () -> Unit) {
-    Card(modifier = Modifier.padding(8.dp).fillMaxWidth()) {
+    Card(modifier = Modifier
+        .padding(8.dp)
+        .fillMaxWidth()) {
         content()
     }
 }

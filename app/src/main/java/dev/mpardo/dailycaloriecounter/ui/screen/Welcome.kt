@@ -16,7 +16,6 @@ import compose.icons.feathericons.ChevronRight
 import dev.mpardo.dailycaloriecounter.R
 import dev.mpardo.dailycaloriecounter.ui.component.NumberInput
 import dev.mpardo.dailycaloriecounter.ui.component.NumberInputValue
-import dev.mpardo.dailycaloriecounter.ui.component.TextInputSelection
 
 @Composable
 fun WelcomeScreen(
@@ -28,7 +27,9 @@ fun WelcomeScreen(
         onGoalUpdate(goal)
     }
     
-    Card(modifier = Modifier.padding(8.dp).fillMaxWidth()) {
+    Card(modifier = Modifier
+        .padding(8.dp)
+        .fillMaxWidth()) {
         Column {
             Text("Define your calorie goal here :", modifier = Modifier.padding(8.dp))
             NumberInput(
@@ -39,12 +40,17 @@ fun WelcomeScreen(
                 keyboardIcon = ImeAction.Done,
                 label = { Text(stringResource(R.string.goal_label)) },
                 onSubmit = { submit(it.toInt()) },
-                modifier = Modifier.padding(8.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth(),
                 requestFocus = true,
             )
         }
     }
-    Column(verticalArrangement = Arrangement.Bottom, modifier = Modifier.fillMaxHeight().fillMaxWidth().padding(24.dp)) {
+    Column(verticalArrangement = Arrangement.Bottom, modifier = Modifier
+        .fillMaxHeight()
+        .fillMaxWidth()
+        .padding(24.dp)) {
         Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
             FloatingActionButton(onClick = { submit(calorieGoal.value.toInt()) }) {
                 Icon(FeatherIcons.ChevronRight, contentDescription = "Next Step")

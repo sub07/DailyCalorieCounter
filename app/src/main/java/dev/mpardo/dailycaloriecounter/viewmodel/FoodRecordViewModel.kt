@@ -1,13 +1,11 @@
 package dev.mpardo.dailycaloriecounter.viewmodel
 
-import android.content.SharedPreferences
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import dev.mpardo.dailycaloriecounter.model.FoodRecord
 import dev.mpardo.dailycaloriecounter.repository.FoodRecordRepository
-import dev.mpardo.dailycaloriecounter.repository.InMemoryFoodRecordRepository
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -37,11 +35,6 @@ class FoodRecordViewModel : ViewModel(), KoinComponent {
     
     fun deleteAll() {
         foodRecordRepository.deleteAll()
-        refresh()
-    }
-    
-    fun updateEntry(e: FoodRecord) {
-        foodRecordRepository.update(e)
         refresh()
     }
     

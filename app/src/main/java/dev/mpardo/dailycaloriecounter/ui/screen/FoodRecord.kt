@@ -21,7 +21,9 @@ fun FoodRecordListScreen(
 ) {
     if (records.isEmpty()) {
         Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
-            Row(modifier = Modifier.fillMaxWidth().padding(8.dp), horizontalArrangement = Arrangement.Center) {
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp), horizontalArrangement = Arrangement.Center) {
                 Text(
                     text = stringResource(R.string.no_record),
                     style = MaterialTheme.typography.body1.copy(textAlign = TextAlign.Center)
@@ -44,7 +46,10 @@ fun FoodRecordItem(
 ) {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         
-        Column(modifier = Modifier.align(Alignment.CenterVertically).padding(8.dp).fillMaxWidth(0.7f)) {
+        Column(modifier = Modifier
+            .align(Alignment.CenterVertically)
+            .padding(8.dp)
+            .fillMaxWidth(0.7f)) {
             Text(
                 stringResource(R.string.records_mass, item.mass, item.food.name),
                 style = MaterialTheme.typography.body1,

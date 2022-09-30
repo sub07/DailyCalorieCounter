@@ -9,42 +9,8 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import kotlin.random.Random
 
 interface FoodEntryCounterRepository : Repository<FoodEntryCounter, FoodEntry>
-
-object InMemoryFoodEntryCounterRepository : FoodEntryCounterRepository {
-    private val db = mutableMapOf<FoodEntry, Int>()
-    
-    init {
-        InMemoryFoodEntryRepository.all.forEach {
-            add(FoodEntryCounter(it, Random.nextInt(50)))
-        }
-    }
-    
-    override val nextId: Long
-        get() = TODO("Not needed")
-    
-    override val all: List<FoodEntryCounter> get() = db.map { FoodEntryCounter(it.key, it.value) }
-    
-    override fun get(key: FoodEntry): FoodEntryCounter? = db[key]?.let { FoodEntryCounter(key, it) }
-    
-    override fun add(e: FoodEntryCounter) {
-        db[e.food] = e.count
-    }
-    
-    override fun delete(e: FoodEntryCounter) {
-        db.remove(e.food)
-    }
-    
-    override fun deleteAll() {
-        db.clear()
-    }
-    
-    override fun update(e: FoodEntryCounter) {
-        db.replace(e.food, e.count)
-    }
-}
 
 private const val FoodEntryCounterKey = "dev.mpardo.dailycaloriecoutner.FoodEntryCounterJsonDb"
 
@@ -55,8 +21,7 @@ class SharedPreferenceFoodEntryCounterRepository : FoodEntryCounterRepository, K
     
     @Serializable
     data class FoodEntryCounterPref(
-        val foodEntryId: Long,
-        var counter: Int
+        val foodEntryId: Long, var counter: Int
     ) {
         fun into(foodEntryRepository: FoodEntryRepository) = FoodEntryCounter(foodEntryRepository.get(foodEntryId)!!, counter)
         

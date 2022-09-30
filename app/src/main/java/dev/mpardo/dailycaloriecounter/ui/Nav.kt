@@ -56,8 +56,8 @@ fun CustomNavHost(
     val getNameFromScreen = @Composable { s: Screen ->
         when (s) {
             Screen.Dashboard -> stringResource(R.string.dashboard_screen_name)
-            Screen.FoodDb -> stringResource(R.string.record_screen_name)
-            Screen.FoodRecord -> stringResource(R.string.database_screen_name)
+            Screen.FoodDb -> stringResource(R.string.database_screen_name)
+            Screen.FoodRecord -> stringResource(R.string.record_screen_name)
             Screen.Settings -> stringResource(R.string.settings_screen_name)
             Screen.Welcome -> stringResource(R.string.welcome_screen_name)
         }

@@ -8,7 +8,6 @@ import dev.mpardo.dailycaloriecounter.model.FoodEntry
 import dev.mpardo.dailycaloriecounter.model.FoodEntryCounter
 import dev.mpardo.dailycaloriecounter.repository.FoodEntryCounterRepository
 import dev.mpardo.dailycaloriecounter.repository.FoodEntryRepository
-import dev.mpardo.dailycaloriecounter.repository.InMemoryFoodEntryCounterRepository
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -43,8 +42,10 @@ class FoodEntryViewModel : ViewModel(), KoinComponent {
     
     fun addOneFoodEntryUse(e: FoodEntry) {
         val value = foodEntryCounterRepository.get(e)
-        value?.let {
-            foodEntryCounterRepository.update(it.copy(count = it.count + 1))
+        if (value == null) {
+            foodEntryCounterRepository.add(FoodEntryCounter(e, 1))
+        } else {
+            foodEntryCounterRepository.update(value.copy(count = value.count + 1))
         }
         refreshCounter()
     }

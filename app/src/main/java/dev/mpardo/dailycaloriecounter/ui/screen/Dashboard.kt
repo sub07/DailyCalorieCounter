@@ -33,11 +33,19 @@ fun DashboardScreen(
 ) {
     var showAddFoodDialog by remember { mutableStateOf(false) }
     
-    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
         Card(modifier = Modifier.padding(bottom = 8.dp)) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(stringResource(R.string.dashboard_left), style = MaterialTheme.typography.h6, modifier = Modifier.padding(bottom = 8.dp))
-                Row(modifier = Modifier.fillMaxWidth().padding(8.dp), horizontalArrangement = Arrangement.Center) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp), horizontalArrangement = Arrangement.Center
+                ) {
                     CircularProgress(
                         progress = totalCalorieRecorded / dailyCalorieGoal.toFloat(),
                         size = 128.dp,
@@ -48,7 +56,9 @@ fun DashboardScreen(
                 }
                 Text(
                     text = stringResource(R.string.dashboard_consumed_kcal, totalCalorieRecorded, "\n"),
-                    modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 8.dp)
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(top = 8.dp)
                 )
             }
         }
@@ -62,7 +72,12 @@ fun DashboardScreen(
         }
     }
     
-    Column(verticalArrangement = Arrangement.Bottom, modifier = Modifier.fillMaxHeight().fillMaxWidth().padding(24.dp)) {
+    Column(
+        verticalArrangement = Arrangement.Bottom, modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth()
+            .padding(24.dp)
+    ) {
         Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
             FloatingActionButton(onClick = { showAddFoodDialog = true }) {
                 Icon(Icons.Filled.Add, "Add food")
@@ -97,7 +112,11 @@ fun AddFoodRecordDialog(
     
     Dialog(onDismissRequest = onDismiss) {
         Card(elevation = 8.dp, shape = RoundedCornerShape(12.dp)) {
-            Row(modifier = Modifier.fillMaxWidth().padding(8.dp), horizontalArrangement = Arrangement.Center) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp), horizontalArrangement = Arrangement.Center
+            ) {
                 Column {
                     TextInput(
                         value = search,
@@ -106,10 +125,12 @@ fun AddFoodRecordDialog(
                         enabled = food == null,
                         label = { Text(stringResource(R.string.dashboard_dialog_food_label)) },
                         placeholder = { Text(stringResource(R.string.dashboard_dialog_food_placeholder)) },
-                        modifier = Modifier.fillMaxWidth().clickable {
-                            food = null
-                            search = search.copy(text = "")
-                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                food = null
+                                search = search.copy(text = "")
+                            },
                     )
                     if (food == null) {
                         Card(elevation = 16.dp, modifier = Modifier.fillMaxWidth()) {
@@ -117,10 +138,12 @@ fun AddFoodRecordDialog(
                                 items(foodEntries.filter { it.name.startsWith(search.text, true) }.sortedByDescending { foodEntryUses[it] }) {
                                     Text(
                                         it.name,
-                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp).clickable {
-                                            food = it
-                                            search = search.copy(text = it.name)
-                                        },
+                                        modifier = Modifier
+                                            .padding(horizontal = 8.dp, vertical = 16.dp)
+                                            .clickable {
+                                                food = it
+                                                search = search.copy(text = it.name)
+                                            },
                                         color = MaterialTheme.colors.primary,
                                     )
                                 }

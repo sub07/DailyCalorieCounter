@@ -39,7 +39,7 @@ class FoodRecordViewModel : ViewModel(), KoinComponent {
     }
     
     private fun refresh() {
-        records = foodRecordRepository.all.sortedBy { it.food.name }
+        records = foodRecordRepository.all.sortedBy { it.date }
         totalCalorieRecorded = records.sumOf { it.mass * (it.food.calorieFor100g / 100.0) }.toInt()
     }
 }

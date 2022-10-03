@@ -8,46 +8,8 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.util.concurrent.atomic.AtomicLong
 
 interface FoodEntryRepository : Repository<FoodEntry, Long>
-
-object InMemoryFoodEntryRepository : FoodEntryRepository {
-    private val idCounter = AtomicLong(0)
-    
-    private val db = mutableMapOf<Long, FoodEntry>()
-    
-    init {
-        add(FoodEntry(-1, "Pâtes", 360))
-        add(FoodEntry(-1, "Fromage Rapé", 338))
-        add(FoodEntry(-1, "Beurre", 745))
-        add(FoodEntry(-1, "Ketchup", 102))
-    }
-    
-    override val nextId: Long
-        get() = idCounter.getAndIncrement()
-    
-    override val all: List<FoodEntry> get() = db.values.map { it.copy() }
-    
-    override fun get(key: Long): FoodEntry? = db[key]
-    
-    override fun add(e: FoodEntry) {
-        val id = idCounter.getAndIncrement()
-        db[id] = e.copy(id = id)
-    }
-    
-    override fun update(e: FoodEntry) {
-        db.replace(e.id, e)
-    }
-    
-    override fun deleteAll() {
-        db.clear()
-    }
-    
-    override fun delete(e: FoodEntry) {
-        db.remove(e.id)
-    }
-}
 
 private const val FoodEntryKey = "dev.mpardo.dailycaloriecoutner.FoodEntryJsonDb"
 private const val FoodEntryNextIdKey = "dev.mpardo.dailycaloriecoutner.FoodEntryNextId"

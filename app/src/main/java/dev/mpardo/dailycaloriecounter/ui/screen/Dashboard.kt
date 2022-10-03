@@ -20,6 +20,7 @@ import dev.mpardo.dailycaloriecounter.R
 import dev.mpardo.dailycaloriecounter.model.FoodEntry
 import dev.mpardo.dailycaloriecounter.model.FoodRecord
 import dev.mpardo.dailycaloriecounter.ui.component.*
+import java.time.Instant
 
 @Composable
 fun DashboardScreen(
@@ -161,7 +162,7 @@ fun AddFoodRecordDialog(
                         initialSelection = TextInputSelection.Full,
                         onSubmit = {
                             food?.let {
-                                onAddRecord(FoodRecord(-1, it, mass.value.toInt()))
+                                onAddRecord(FoodRecord(-1, it, mass.value.toInt(), Instant.now().epochSecond))
                             }
                         },
                         keyboardIcon = ImeAction.Done,
@@ -171,7 +172,7 @@ fun AddFoodRecordDialog(
                         TextButton(onDismiss) { Text(stringResource(R.string.cancel), color = contentColorFor(MaterialTheme.colors.background)) }
                         TextButton(enabled = food != null, onClick = {
                             food?.let {
-                                onAddRecord(FoodRecord(-1, food!!, mass.value.toInt()))
+                                onAddRecord(FoodRecord(-1, food!!, mass.value.toInt(), Instant.now().epochSecond))
                                 
                             }
                         }) { Text(stringResource(R.string.add)) }

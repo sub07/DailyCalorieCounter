@@ -5,10 +5,6 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 
-object InMemorySettingsRepository {
-    var dailyCalorieGoal = 1800
-}
-
 private const val DailyCalorieGoalKey = "dev.mpardo.dailycaloriecoutner.DailyCalorieGoal"
 
 class SharedPreferenceSettingsRepository : KoinComponent {

@@ -10,4 +10,4 @@ data class FoodEntry(val id: Long, var name: String, var calorieFor100g: Int) : 
 data class FoodEntryCounter(val food: FoodEntry, var count: Int) : Parcelable
 
 @Parcelize
-data class FoodRecord(val id: Long, var food: FoodEntry, var mass: Int) : Parcelable
+data class FoodRecord(val id: Long, var food: FoodEntry, var mass: Int, val date: Long) : Parcelable

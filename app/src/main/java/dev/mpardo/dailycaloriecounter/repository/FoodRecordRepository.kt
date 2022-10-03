@@ -8,48 +8,8 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.util.concurrent.atomic.AtomicLong
-import kotlin.random.Random
 
 interface FoodRecordRepository : Repository<FoodRecord, Long>
-
-object InMemoryFoodRecordRepository : FoodRecordRepository {
-    
-    private val idCounter = AtomicLong(0)
-    
-    private val db = mutableMapOf<Long, FoodRecord>()
-    
-    init {
-        InMemoryFoodEntryRepository.all.forEach {
-            add(FoodRecord(-1, it, Random.nextInt(500)))
-        }
-    }
-    
-    override val nextId: Long
-        get() = idCounter.getAndIncrement()
-    
-    override val all: List<FoodRecord> get() = db.values.map { it.copy() }
-    
-    override fun get(key: Long): FoodRecord? = db[key]
-    
-    override fun add(e: FoodRecord) {
-        val id = idCounter.getAndIncrement()
-        db[id] = e.copy(id = id)
-    }
-    
-    override fun delete(e: FoodRecord) {
-        db.remove(e.id)
-    }
-    
-    override fun deleteAll() {
-        db.clear()
-    }
-    
-    override fun update(e: FoodRecord) {
-        db.replace(e.id, e)
-    }
-    
-}
 
 private const val FoodRecordKey = "dev.mpardo.dailycaloriecoutner.FoodRecordJsonDb"
 private const val FoodRecordNextIdKey = "dev.mpardo.dailycaloriecoutner.FoodRecordNextId"
@@ -64,11 +24,12 @@ class SharedPreferenceFoodRecordRepository : FoodRecordRepository, KoinComponent
         val id: Long,
         var foodEntryId: Long,
         val mass: Int,
+        val date: Long,
     ) {
-        fun into(foodEntryRepository: FoodEntryRepository) = FoodRecord(id, foodEntryRepository.get(this.foodEntryId)!!, mass)
+        fun into(foodEntryRepository: FoodEntryRepository) = FoodRecord(id, foodEntryRepository.get(this.foodEntryId)!!, mass, date)
         
         companion object {
-            fun from(record: FoodRecord) = FoodRecordPref(record.id, record.food.id, record.mass)
+            fun from(record: FoodRecord) = FoodRecordPref(record.id, record.food.id, record.mass, record.date)
         }
     }
     

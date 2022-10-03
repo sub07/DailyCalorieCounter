@@ -1,5 +1,8 @@
 package dev.mpardo.dailycaloriecounter.ui.screen
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -47,8 +50,12 @@ fun DashboardScreen(
                         .fillMaxWidth()
                         .padding(8.dp), horizontalArrangement = Arrangement.Center
                 ) {
+                    val animation by animateFloatAsState(
+                        targetValue = (totalCalorieRecorded / dailyCalorieGoal.toFloat()).coerceIn(0f, 1f),
+                        animationSpec = tween(durationMillis = 1000, delayMillis = 40, easing = FastOutSlowInEasing)
+                    )
                     CircularProgress(
-                        progress = totalCalorieRecorded / dailyCalorieGoal.toFloat(),
+                        progress = animation,
                         size = 128.dp,
                         text = stringResource(R.string.dashboard_kcal_left, (dailyCalorieGoal - totalCalorieRecorded).coerceAtLeast(0), "\n"),
                         barColor = if (totalCalorieRecorded > dailyCalorieGoal) MaterialTheme.colors.error else MaterialTheme.colors.primary,

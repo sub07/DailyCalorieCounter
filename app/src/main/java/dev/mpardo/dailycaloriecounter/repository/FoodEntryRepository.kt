@@ -17,17 +17,17 @@ private const val FoodEntryNextIdKey = "dev.mpardo.dailycaloriecoutner.FoodEntry
 class SharedPreferenceFoodEntryRepository : FoodEntryRepository, KoinComponent {
     
     private val sharedPreferences by inject<SharedPreferences>()
-    
     @Serializable
     data class FoodEntryPref(
         val id: Long,
         var name: String,
-        var calorieFor100g: Int
+        var calorieFor100g: Int,
+        var protein: Int,
     ) {
-        fun into() = FoodEntry(id, name, calorieFor100g)
+        fun into() = FoodEntry(id, name, calorieFor100g, protein)
         
         companion object {
-            fun from(entry: FoodEntry) = FoodEntryPref(entry.id, entry.name, entry.calorieFor100g)
+            fun from(entry: FoodEntry) = FoodEntryPref(entry.id, entry.name, entry.calorieFor100g, entry.protein)
         }
     }
     

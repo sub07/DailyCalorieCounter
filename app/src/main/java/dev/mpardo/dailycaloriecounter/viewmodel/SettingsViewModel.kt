@@ -15,6 +15,7 @@ class SettingsViewModel : ViewModel(), KoinComponent {
     private val settingsRepository by inject<SharedPreferenceSettingsRepository>()
     
     var dailyCalorieGoal by mutableStateOf(0)
+    var dailyProteinGoal by mutableStateOf(0)
     
     init {
         refresh()
@@ -22,6 +23,11 @@ class SettingsViewModel : ViewModel(), KoinComponent {
     
     fun setNewDailyCalorieGoal(newGoal: Int) {
         settingsRepository.dailyCalorieGoal = newGoal
+        refresh()
+    }
+    
+    fun setNewDailyProteinGoal(newGoal: Int) {
+        settingsRepository.dailyProteinGoal = newGoal
         refresh()
     }
     
@@ -33,5 +39,6 @@ class SettingsViewModel : ViewModel(), KoinComponent {
     
     fun refresh() {
         dailyCalorieGoal = settingsRepository.dailyCalorieGoal
+        dailyProteinGoal = settingsRepository.dailyProteinGoal
     }
 }

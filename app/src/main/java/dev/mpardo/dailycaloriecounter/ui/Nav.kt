@@ -63,34 +63,30 @@ fun CustomNavHost(
         }
     }
     
-    Scaffold(
-        bottomBar = {
-            BottomNavigation {
-                Screens.filter { it.icon != null }.forEach { screen ->
-                    BottomNavigationItem(
-                        selected = navController.currentBackStackEntryAsState().value?.destination?.hierarchy?.any { it.route == screen.route } == true,
-                        icon = { Icon(screen.icon!!, "${getNameFromScreen(screen)} navigation button") },
-                        label = { Text(getNameFromScreen(screen)) },
-                        onClick = {
-                            navController.navigate(screen.route) {
-                                popUpTo(navController.graph.findStartDestination().id) { saveState = true }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        }
-                    )
+    Scaffold(bottomBar = {
+        BottomNavigation {
+            Screens.filter { it.icon != null }.forEach { screen ->
+                BottomNavigationItem(selected = navController.currentBackStackEntryAsState().value?.destination?.hierarchy?.any { it.route == screen.route } == true,
+                                     icon = { Icon(screen.icon!!, "${getNameFromScreen(screen)} navigation button") },
+                                     label = { Text(getNameFromScreen(screen)) },
+                                     onClick = {
+                                         navController.navigate(screen.route) {
+                                             popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                                             launchSingleTop = true
+                                             restoreState = true
+                                         }
+                                     })
+            }
+        }
+    }, topBar = {
+        TopAppBar(title = {
+            Screens.forEach { screen ->
+                if (navController.currentBackStackEntryAsState().value?.destination?.hierarchy?.any { it.route == screen.route } == true) {
+                    Text(getNameFromScreen(screen))
                 }
             }
-        }, topBar = {
-            TopAppBar(title = {
-                Screens.forEach { screen ->
-                    if (navController.currentBackStackEntryAsState().value?.destination?.hierarchy?.any { it.route == screen.route } == true) {
-                        Text(getNameFromScreen(screen))
-                    }
-                }
-            })
-        }
-    ) { innerPadding ->
+        })
+    }) { innerPadding ->
         NavHost(
             modifier = modifier.padding(innerPadding),
             navController = navController,
@@ -111,24 +107,28 @@ fun CustomNavHost(
             }
             
             composable(Screen.Dashboard.route) {
-                DashboardScreen(
-                    settingsViewModel.dailyCalorieGoal,
-                    foodRecordViewModel.totalCalorieRecorded,
-                    foodEntryViewModel.calDb,
-                    foodEntryViewModel.foodDbCounter,
-                    onAddFoodUse = { foodEntryViewModel.addOneFoodEntryUse(it) },
-                    onAddRecord = { foodRecordViewModel.addFoodEntry(it) },
-                    onClearAllRecord = { foodRecordViewModel.deleteAll() }
-                )
+                DashboardScreen(dailyCalorieGoal = settingsViewModel.dailyCalorieGoal,
+                                dailyProteinGoal = settingsViewModel.dailyProteinGoal,
+                                totalCalorieRecorded = foodRecordViewModel.totalCalorieRecorded,
+                                foodEntries = foodEntryViewModel.calDb,
+                                foodEntryUses = foodEntryViewModel.foodDbCounter,
+                                totalProteinRecorded = foodRecordViewModel.totalProteinRecorded,
+                                onAddFoodUse = { foodEntryViewModel.addOneFoodEntryUse(it) },
+                                onAddRecord = { foodRecordViewModel.addFoodEntry(it) },
+                                onClearAllRecord = { foodRecordViewModel.deleteAll() })
             }
             
             composable(Screen.Settings.route) {
-                SettingsScreen(settingsViewModel.dailyCalorieGoal, onGoalUpdate = { settingsViewModel.setNewDailyCalorieGoal(it) })
+                SettingsScreen(settingsViewModel.dailyCalorieGoal,
+                               settingsViewModel.dailyProteinGoal,
+                               onCalorieGoalUpdate = { settingsViewModel.setNewDailyCalorieGoal(it) },
+                               onProteinGoalUpdate = { settingsViewModel.setNewDailyProteinGoal(it) })
             }
             
             composable(Screen.Welcome.route) {
-                WelcomeScreen(onGoalUpdate = {
-                    settingsViewModel.setNewDailyCalorieGoal(it)
+                WelcomeScreen(onGoalUpdate = { calorie, protein ->
+                    settingsViewModel.setNewDailyCalorieGoal(calorie)
+                    settingsViewModel.setNewDailyProteinGoal(protein)
                     settingsViewModel.setWelcomeDone()
                     navController.navigate(Screen.Dashboard.route)
                 })

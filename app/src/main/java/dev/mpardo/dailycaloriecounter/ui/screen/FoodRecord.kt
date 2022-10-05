@@ -58,6 +58,10 @@ fun FoodRecordItem(
                 "${(item.mass * (item.food.calorieFor100g / 100.0)).toInt()} kcal",
                 style = MaterialTheme.typography.caption,
             )
+            Text(
+                "${(item.mass * (item.food.protein / 100.0)).toInt()} g of protein",
+                style = MaterialTheme.typography.caption,
+            )
         }
         Row {
             IconButton(onClick = onDelete) {

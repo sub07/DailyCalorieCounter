@@ -19,14 +19,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.chargemap.compose.numberpicker.NumberPicker
 import com.talhafaki.composablesweettoast.util.SweetToastUtil.SweetError
 import dev.mpardo.dailycaloriecounter.R
 import dev.mpardo.dailycaloriecounter.model.FoodEntry
 import dev.mpardo.dailycaloriecounter.model.FoodRecord
-import dev.mpardo.dailycaloriecounter.ui.component.DividedLazyColumn
-import dev.mpardo.dailycaloriecounter.ui.component.TextInput
-import dev.mpardo.dailycaloriecounter.ui.component.TextInputSelection
+import dev.mpardo.dailycaloriecounter.ui.component.*
 
 @Composable
 fun FoodCalDbListScreen(
@@ -42,12 +39,13 @@ fun FoodCalDbListScreen(
     
     if (foods.isEmpty()) {
         Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp), horizontalArrangement = Arrangement.Center) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp), horizontalArrangement = Arrangement.Center
+            ) {
                 Text(
-                    text = stringResource(R.string.food_db_empty),
-                    style = MaterialTheme.typography.body1.copy(textAlign = TextAlign.Center)
+                    text = stringResource(R.string.food_db_empty), style = MaterialTheme.typography.body1.copy(textAlign = TextAlign.Center)
                 )
             }
         }
@@ -75,10 +73,12 @@ fun FoodCalDbListScreen(
         }
     }
     
-    Column(verticalArrangement = Arrangement.Bottom, modifier = Modifier
-        .fillMaxHeight()
-        .fillMaxWidth()
-        .padding(24.dp)) {
+    Column(
+        verticalArrangement = Arrangement.Bottom, modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth()
+            .padding(24.dp)
+    ) {
         Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
             FloatingActionButton(onClick = { showAddFoodDialog = true }) {
                 Icon(Icons.Filled.Add, "Add food")
@@ -111,16 +111,22 @@ fun FoodCalDbListScreen(
 @Composable
 fun FoodDbItem(item: FoodEntry, onEdit: () -> Unit, onDelete: () -> Unit) {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Column(modifier = Modifier
-            .align(Alignment.CenterVertically)
-            .padding(8.dp)
-            .fillMaxWidth(0.7f)) {
+        Column(
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .padding(8.dp)
+                .fillMaxWidth(0.7f)
+        ) {
             Text(
                 item.name,
                 style = MaterialTheme.typography.body1,
             )
             Text(
                 stringResource(R.string.entry_kcal, item.calorieFor100g),
+                style = MaterialTheme.typography.caption,
+            )
+            Text(
+                stringResource(R.string.db_protein_100g, item.protein),
                 style = MaterialTheme.typography.caption,
             )
         }
@@ -140,38 +146,27 @@ fun EditFoodDialog(
     foodEntry: FoodEntry? = null, onDismiss: () -> Unit = {}, onValidate: (FoodEntry) -> Unit = {}, onEdit: (FoodEntry) -> Unit = {}
 ) {
     var name by remember { mutableStateOf(TextFieldValue(foodEntry?.name ?: "")) }
+    var calorie by remember { mutableStateOf(NumberInputValue(foodEntry?.calorieFor100g ?: 0)) }
+    var protein by remember { mutableStateOf(NumberInputValue(foodEntry?.protein ?: 0)) }
+    var canConfirm by remember { mutableStateOf(foodEntry?.name?.isNotEmpty() ?: false) }
+    var calorieFocused by remember { mutableStateOf(false) }
+    var proteinFocused by remember { mutableStateOf(false) }
     
-    data class CalorieDigits(val units: Int, val tens: Int, val hundreds: Int)
-    
-    val calDigits = run {
-        if (foodEntry != null) {
-            val digits = foodEntry.calorieFor100g.toString().map { it.digitToInt() }.toMutableList()
-            while (digits.size < 3) {
-                digits.add(0, 0)
-            }
-            CalorieDigits(
-                digits.getOrNull(2) ?: 0,
-                digits.getOrNull(1) ?: 0,
-                digits.getOrNull(0) ?: 0,
-            )
+    fun submit() {
+        if (foodEntry == null) {
+            onValidate(FoodEntry(-1, name.text, calorie.value.toInt(), protein.value.toInt()))
         } else {
-            null
+            foodEntry.name = name.text
+            foodEntry.calorieFor100g = calorie.value.toInt()
+            onEdit(foodEntry)
         }
     }
-    
-    var calUnit by remember { mutableStateOf(calDigits?.units ?: 0) }
-    var calTens by remember { mutableStateOf(calDigits?.tens ?: 0) }
-    var calHundreds by remember { mutableStateOf(calDigits?.hundreds ?: 0) }
-    
-    var canConfirm by remember { mutableStateOf(foodEntry?.name?.isNotEmpty() ?: false) }
-    
-    fun getCalorie() = calUnit + calTens * 10 + calHundreds * 100
     
     Dialog(onDismissRequest = onDismiss) {
         Card(
             elevation = 8.dp, shape = RoundedCornerShape(12.dp)
         ) {
-            Column(modifier = Modifier.padding(8.dp)) {
+            Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)) {
                 TextInput(
                     value = name,
                     onValueChange = {
@@ -180,51 +175,44 @@ fun EditFoodDialog(
                     },
                     label = { Text(stringResource(R.string.food_db_add_dialog_name_label)) },
                     placeholder = { Text(stringResource(R.string.food_db_add_dialog_name_placeholder)) },
-                    modifier = Modifier.padding(8.dp),
                     isError = !canConfirm,
-                    onSubmit = {
-                        if (canConfirm) {
-                            if (foodEntry == null) {
-                                onValidate(FoodEntry(-1, name.text, getCalorie()))
-                            } else {
-                                foodEntry.name = name.text
-                                foodEntry.calorieFor100g = getCalorie()
-                                onEdit(foodEntry)
-                            }
-                        }
-                    },
+                    onSubmit = { calorieFocused = true },
                     initialSelection = TextInputSelection.Full,
                     keyboardIcon = ImeAction.Next,
                     requestFocus = true,
                 )
-                Spacer(Modifier.height(16.dp))
-                Row(modifier = Modifier.align(Alignment.CenterHorizontally), verticalAlignment = Alignment.CenterVertically) {
-                    NumberPicker(
-                        value = calHundreds, onValueChange = { calHundreds = it }, range = 0..9
-                    )
-                    NumberPicker(
-                        value = calTens, onValueChange = { calTens = it }, range = 0..9
-                    )
-                    NumberPicker(
-                        value = calUnit, onValueChange = { calUnit = it }, range = 0..9
-                    )
-                    Text(stringResource(R.string.kcal_for_100g), modifier = Modifier.padding(PaddingValues(horizontal = 8.dp)))
-                }
+                NumberInput(
+                    value = calorie,
+                    onValueChange = {
+                        calorie = it
+                        canConfirm = it.value.toInt() >= 0
+                    },
+                    label = { Text(text = stringResource(R.string.kcal_for_100g)) },
+                    isError = !canConfirm,
+                    requestFocus = calorieFocused,
+                    keyboardIcon = ImeAction.Next,
+                    initialSelection = TextInputSelection.Full,
+                    onSubmit = { proteinFocused = true },
+                )
+                NumberInput(
+                    value = protein,
+                    onValueChange = {
+                        protein = it
+                        canConfirm = it.value.toInt() >= 0
+                    },
+                    label = { Text(text = stringResource(R.string.protein_100g)) },
+                    isError = !canConfirm,
+                    requestFocus = proteinFocused,
+                    keyboardIcon = ImeAction.Done,
+                    initialSelection = TextInputSelection.Full,
+                    onSubmit = { submit() }
+                )
                 Row(modifier = Modifier.align(Alignment.End)) {
                     TextButton(onDismiss) { Text(stringResource(R.string.cancel), color = contentColorFor(MaterialTheme.colors.background)) }
                     if (foodEntry == null) {
-                        TextButton(
-                            { onValidate(FoodEntry(-1, name.text, getCalorie())) },
-                            enabled = canConfirm
-                        ) { Text(stringResource(R.string.create)) }
+                        TextButton(onClick = { submit() }, enabled = canConfirm) { Text(stringResource(R.string.create)) }
                     } else {
-                        TextButton(
-                            onClick = {
-                                foodEntry.name = name.text
-                                foodEntry.calorieFor100g = getCalorie()
-                                onEdit(foodEntry)
-                            }, enabled = canConfirm
-                        ) { Text(stringResource(R.string.edit)) }
+                        TextButton(onClick = { submit() }, enabled = canConfirm) { Text(stringResource(R.string.edit)) }
                     }
                 }
             }

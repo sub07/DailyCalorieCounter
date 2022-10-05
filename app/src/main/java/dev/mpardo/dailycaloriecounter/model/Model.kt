@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class FoodEntry(val id: Long, var name: String, var calorieFor100g: Int) : Parcelable
+data class FoodEntry(val id: Long, var name: String, var calorieFor100g: Int, var protein: Int) : Parcelable
 
 @Parcelize
 data class FoodEntryCounter(val food: FoodEntry, var count: Int) : Parcelable

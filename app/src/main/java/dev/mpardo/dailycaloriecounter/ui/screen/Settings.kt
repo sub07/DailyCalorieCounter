@@ -17,42 +17,76 @@ import dev.mpardo.dailycaloriecounter.ui.component.TextInputSelection
 
 @Composable
 fun SettingsScreen(
-    dailyGoal: Int,
-    onGoalUpdate: (Int) -> Unit,
+    dailyCalorieGoal: Int,
+    dailyProteinGoal: Int,
+    onCalorieGoalUpdate: (Int) -> Unit,
+    onProteinGoalUpdate: (Int) -> Unit,
 ) {
-    var showDailyGoalDialog by remember { mutableStateOf(false) }
+    var showDailyCalorieGoalDialog by remember { mutableStateOf(false) }
+    var showDailyProteinGoalDialog by remember { mutableStateOf(false) }
     
     Column {
         SettingsItem {
             Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(stringResource(R.string.goal_label), modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .padding(8.dp)
-                    .fillMaxWidth(0.6f))
-                TextButton({ showDailyGoalDialog = true }, modifier = Modifier.align(Alignment.CenterVertically)) {
-                    Text("$dailyGoal kcal")
+                Text(
+                    stringResource(R.string.calorie_goal_label), modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(8.dp)
+                        .fillMaxWidth(0.6f)
+                )
+                TextButton({ showDailyCalorieGoalDialog = true }, modifier = Modifier.align(Alignment.CenterVertically)) {
+                    Text("$dailyCalorieGoal kcal")
+                }
+            }
+        }
+        
+        SettingsItem {
+            Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                Text(
+                    stringResource(R.string.protein_goal_label), modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(8.dp)
+                        .fillMaxWidth(0.6f)
+                )
+                TextButton({ showDailyProteinGoalDialog = true }, modifier = Modifier.align(Alignment.CenterVertically)) {
+                    Text("$dailyProteinGoal g")
                 }
             }
         }
     }
     
-    if (showDailyGoalDialog) {
+    if (showDailyCalorieGoalDialog) {
         EditDailyGoalDialog(
-            dailyGoal,
-            onDismiss = { showDailyGoalDialog = false },
+            dailyCalorieGoal,
+            onDismiss = { showDailyCalorieGoalDialog = false },
             onEdit = {
-                onGoalUpdate(it)
-                showDailyGoalDialog = false
-            }
+                onCalorieGoalUpdate(it)
+                showDailyCalorieGoalDialog = false
+            },
+            label = stringResource(R.string.calorie_goal_label),
+        )
+    }
+    
+    if (showDailyProteinGoalDialog) {
+        EditDailyGoalDialog(
+            dailyProteinGoal,
+            onDismiss = { showDailyProteinGoalDialog = false },
+            onEdit = {
+                onProteinGoalUpdate(it)
+                showDailyProteinGoalDialog = false
+            },
+            label = stringResource(R.string.protein_goal_label),
         )
     }
 }
 
 @Composable
 fun SettingsItem(content: @Composable () -> Unit) {
-    Card(modifier = Modifier
-        .padding(8.dp)
-        .fillMaxWidth()) {
+    Card(
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth()
+    ) {
         content()
     }
 }
@@ -60,6 +94,7 @@ fun SettingsItem(content: @Composable () -> Unit) {
 @Composable
 fun EditDailyGoalDialog(
     goal: Int,
+    label: String,
     onDismiss: () -> Unit = {},
     onEdit: (Int) -> Unit = {}
 ) {
@@ -74,10 +109,10 @@ fun EditDailyGoalDialog(
                     value = newGoal,
                     onValueChange = { newGoal = it },
                     onSubmit = { onEdit(it.toInt()) },
-                    label = { Text(stringResource(R.string.goal_label)) },
+                    label = { Text(label) },
                     requestFocus = true,
                     initialSelection = TextInputSelection.Full,
-                    keyboardIcon = ImeAction.Next
+                    keyboardIcon = ImeAction.Done
                 )
                 Spacer(Modifier.height(16.dp))
                 Row(modifier = Modifier.align(Alignment.End)) {

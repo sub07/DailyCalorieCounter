@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import dev.mpardo.dailycaloriecounter.R
@@ -28,7 +29,9 @@ import java.time.Instant
 @Composable
 fun DashboardScreen(
     dailyCalorieGoal: Int,
+    dailyProteinGoal: Int,
     totalCalorieRecorded: Int,
+    totalProteinRecorded: Int,
     foodEntries: List<FoodEntry>,
     foodEntryUses: Map<FoodEntry, Int>,
     onAddFoodUse: (FoodEntry) -> Unit,
@@ -50,12 +53,12 @@ fun DashboardScreen(
                         .fillMaxWidth()
                         .padding(8.dp), horizontalArrangement = Arrangement.Center
                 ) {
-                    val animation by animateFloatAsState(
+                    val calorieRatio by animateFloatAsState(
                         targetValue = (totalCalorieRecorded / dailyCalorieGoal.toFloat()).coerceIn(0f, 1f),
                         animationSpec = tween(durationMillis = 1000, delayMillis = 40, easing = FastOutSlowInEasing)
                     )
                     CircularProgress(
-                        progress = animation,
+                        progress = calorieRatio,
                         size = 128.dp,
                         text = stringResource(R.string.dashboard_kcal_left, (dailyCalorieGoal - totalCalorieRecorded).coerceAtLeast(0), "\n"),
                         barColor = if (totalCalorieRecorded > dailyCalorieGoal) MaterialTheme.colors.error else MaterialTheme.colors.primary,
@@ -66,8 +69,25 @@ fun DashboardScreen(
                     text = stringResource(R.string.dashboard_consumed_kcal, totalCalorieRecorded, "\n"),
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
-                        .padding(top = 8.dp)
+                        .padding(top = 8.dp, bottom = 16.dp)
                 )
+                Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                    Column {
+                        val proteinRatio by animateFloatAsState(
+                            targetValue = (totalProteinRecorded / dailyProteinGoal.toFloat()).coerceIn(0f, 1f),
+                            animationSpec = tween(durationMillis = 1000, delayMillis = 40, easing = FastOutSlowInEasing)
+                        )
+                        CircularProgress(
+                            progress = proteinRatio,
+                            size = 64.dp,
+                            barColor = if (totalProteinRecorded > dailyProteinGoal) MaterialTheme.colors.error else MaterialTheme.colors.secondary,
+                            textColor = if (totalProteinRecorded > dailyProteinGoal) MaterialTheme.colors.error else MaterialTheme.colors.secondary,
+                            text = stringResource(R.string.protein_left, (dailyProteinGoal - totalProteinRecorded).coerceAtLeast(0), "\n"),
+                            textStyle = MaterialTheme.typography.body1.copy(color = MaterialTheme.colors.secondary, textAlign = TextAlign.Center)
+                        )
+                        Text(text = "Proteins")
+                    }
+                }
             }
         }
         

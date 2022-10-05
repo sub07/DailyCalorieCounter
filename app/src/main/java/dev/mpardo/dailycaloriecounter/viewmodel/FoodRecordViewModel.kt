@@ -19,6 +19,9 @@ class FoodRecordViewModel : ViewModel(), KoinComponent {
     var totalCalorieRecorded by mutableStateOf(0)
         private set
     
+    var totalProteinRecorded by mutableStateOf(0)
+        private set
+    
     init {
         refresh()
     }
@@ -41,5 +44,6 @@ class FoodRecordViewModel : ViewModel(), KoinComponent {
     private fun refresh() {
         records = foodRecordRepository.all.sortedBy { it.date }
         totalCalorieRecorded = records.sumOf { it.mass * (it.food.calorieFor100g / 100.0) }.toInt()
+        totalProteinRecorded = records.sumOf { it.mass * (it.food.protein / 100.0) }.toInt()
     }
 }

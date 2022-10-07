@@ -14,7 +14,7 @@
     <string name="create">Create</string>
     <string name="kcal_for_100g">kcal for 100g</string>
     <string name="no_record">No record yet, go to the dashboard and add one</string>
-    <string name="calorie_goal_label">Daily Calorie Goal</string>
+    <string name="calorie_goal_label">Daily calorie goal</string>
     <string name="dashboard_screen_name">Dashboard</string>
     <string name="record_screen_name">Records</string>
     <string name="database_screen_name">Database</string>
@@ -26,6 +26,16 @@
     <string name="welcome_screen_name">Welcome</string>
     <string name="protein_100g">g of protein for 100g</string>
     <string name="db_protein_100g">%1$d g of protein for 100g</string>
-    <string name="protein_goal_label">Daily Protein Goal</string>
-    <string name="protein_left">%1$d g%2$sleft</string>
+    <string name="protein_goal_label">Daily protein goal</string>
+    <string name="characteristic_left">%1$d g%2$sleft</string>
+    <string name="carbohydrate_name">Carbohydrates</string>
+    <string name="energy_name">Calorie</string>
+    <string name="fats_name">Fats</string>
+    <string name="protein_name">Proteins</string>
+    <string name="salt_name">Salt</string>
+    <string name="fats_goal_label">Daily fats goal</string>
+    <string name="carbohydrates_goal_label">Daily carbohydrates goal</string>
+    <string name="salt_goal_label">Daily salt goal</string>
+    <string name="add_custom_calorie_amount_label">Add custom calorie amount</string>
+    <string name="submit">Submit</string>
 </resources>

@@ -1,6 +1,5 @@
 package dev.mpardo.dailycaloriecounter
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,7 +13,6 @@ import dev.mpardo.dailycaloriecounter.ui.theme.DailyCaloryCounterTheme
 import dev.mpardo.dailycaloriecounter.viewmodel.FoodEntryViewModel
 import dev.mpardo.dailycaloriecounter.viewmodel.FoodRecordViewModel
 import dev.mpardo.dailycaloriecounter.viewmodel.SettingsViewModel
-import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -35,10 +33,6 @@ class DailyCalorieCounterActivity : ComponentActivity() {
             modules(viewModelModule)
         }
         
-        val showWelcomePage = get<SharedPreferences>().run {
-            getBoolean("showWelcomePage", true)
-        }
-        
         setContent {
             DailyCaloryCounterTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
@@ -46,7 +40,7 @@ class DailyCalorieCounterActivity : ComponentActivity() {
                         foodEntryViewModel = foodEntryViewModel,
                         foodRecordViewModel = foodRecordViewModel,
                         settingsViewModel = settingsViewModel,
-                        startDestination = if (showWelcomePage) Screen.Welcome.route else Screen.Dashboard.route
+                        startDestination = Screen.Dashboard.route
                     )
                 }
             }

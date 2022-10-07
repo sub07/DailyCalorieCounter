@@ -52,10 +52,11 @@ fun NumberInput(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     shape: Shape = TextFieldDefaults.OutlinedTextFieldShape,
     colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(),
-    requestFocus: Boolean = false,
+    focused: Boolean = false,
     initialSelection: TextInputSelection = TextInputSelection.None,
     onSubmit: ((Number) -> Unit)? = null,
     keyboardIcon: ImeAction = ImeAction.Done,
+    validation: (NumberInputValue) -> Boolean = { true },
 ) {
     
     TextInput(
@@ -75,7 +76,7 @@ fun NumberInput(
         interactionSource = interactionSource,
         shape = shape,
         colors = colors,
-        requestFocus = requestFocus,
+        focused = focused,
         initialSelection = initialSelection,
         onSubmit = {
             onSubmit?.let { func ->
@@ -83,6 +84,7 @@ fun NumberInput(
             }
         },
         keyboardIcon = keyboardIcon,
+        validation = { validation(NumberInputValue(it)) }
     )
     
 }

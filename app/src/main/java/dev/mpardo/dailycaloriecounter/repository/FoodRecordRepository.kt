@@ -1,6 +1,7 @@
 package dev.mpardo.dailycaloriecounter.repository
 
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import dev.mpardo.dailycaloriecounter.model.FoodRecord
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -9,10 +10,15 @@ import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-interface FoodRecordRepository : Repository<FoodRecord, Long>
+interface FoodRecordRepository : Repository<FoodRecord, Long> {
+    fun clearCustomEnergyRecord()
+    fun addCustomEnergyRecord(amount: Int)
+    val customEnergyAmount: Int
+}
 
 private const val FoodRecordKey = "dev.mpardo.dailycaloriecoutner.FoodRecordJsonDb"
 private const val FoodRecordNextIdKey = "dev.mpardo.dailycaloriecoutner.FoodRecordNextId"
+private const val FoodRecordCustomEnergyKey = "dev.mpardo.dailycaloriecoutner.FoodRecordCustomEnergy"
 
 class SharedPreferenceFoodRecordRepository : FoodRecordRepository, KoinComponent {
     
@@ -70,4 +76,19 @@ class SharedPreferenceFoodRecordRepository : FoodRecordRepository, KoinComponent
     override fun update(e: FoodRecord) {
         json = Json.encodeToString(allPref.map { if (it.id == e.id) e.into() else it })
     }
+    
+    override fun addCustomEnergyRecord(amount: Int) {
+        sharedPreferences.edit {
+            putInt(FoodRecordCustomEnergyKey, customEnergyAmount + amount)
+        }
+    }
+    
+    override fun clearCustomEnergyRecord() {
+        sharedPreferences.edit {
+            putInt(FoodRecordCustomEnergyKey, 0)
+        }
+    }
+    
+    override val customEnergyAmount: Int
+        get() = sharedPreferences.getInt(FoodRecordCustomEnergyKey, 0)
 }

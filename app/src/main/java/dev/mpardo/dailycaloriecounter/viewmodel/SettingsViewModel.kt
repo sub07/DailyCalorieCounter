@@ -1,14 +1,12 @@
 package dev.mpardo.dailycaloriecounter.viewmodel
 
-import android.content.SharedPreferences
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.core.content.edit
 import androidx.lifecycle.ViewModel
+import dev.mpardo.dailycaloriecounter.model.*
 import dev.mpardo.dailycaloriecounter.repository.SharedPreferenceSettingsRepository
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 import org.koin.core.component.inject
 
 class SettingsViewModel : ViewModel(), KoinComponent {
@@ -16,29 +14,42 @@ class SettingsViewModel : ViewModel(), KoinComponent {
     
     var dailyCalorieGoal by mutableStateOf(0)
     var dailyProteinGoal by mutableStateOf(0)
+    var dailyFatsGoal by mutableStateOf(0)
+    var dailyCarbohydratesGoal by mutableStateOf(0)
+    var dailySaltGoal by mutableStateOf(0)
+    
+    val goals get() = settingsRepository.goals
     
     init {
-        refresh()
+        dailyCalorieGoal = settingsRepository.dailyCalorieGoal.value
+        dailyProteinGoal = settingsRepository.dailyProteinGoal.value
+        dailyFatsGoal = settingsRepository.dailyFatsGoal.value
+        dailyCarbohydratesGoal = settingsRepository.dailyCarbohydratesGoal.value
+        dailySaltGoal = settingsRepository.dailySaltGoal.value
     }
     
-    fun setNewDailyCalorieGoal(newGoal: Int) {
+    fun setNewDailyCalorieGoal(newGoal: Energy) {
         settingsRepository.dailyCalorieGoal = newGoal
-        refresh()
+        dailyCalorieGoal = newGoal.value
     }
     
-    fun setNewDailyProteinGoal(newGoal: Int) {
+    fun setNewDailyProteinGoal(newGoal: Proteins) {
         settingsRepository.dailyProteinGoal = newGoal
-        refresh()
+        dailyProteinGoal = newGoal.value
     }
     
-    fun setWelcomeDone() {
-        get<SharedPreferences>().edit {
-            putBoolean("showWelcomePage", false)
-        }
+    fun setNewDailyFatsGoal(newGoal: Fats) {
+        settingsRepository.dailyFatsGoal = newGoal
+        dailyFatsGoal = newGoal.value
     }
     
-    fun refresh() {
-        dailyCalorieGoal = settingsRepository.dailyCalorieGoal
-        dailyProteinGoal = settingsRepository.dailyProteinGoal
+    fun setNewDailyCarbohydratesGoal(newGoal: Carbohydrates) {
+        settingsRepository.dailyCarbohydratesGoal = newGoal
+        dailyCarbohydratesGoal = newGoal.value
+    }
+    
+    fun setNewDailySaltGoal(newGoal: Salt) {
+        settingsRepository.dailySaltGoal = newGoal
+        dailySaltGoal = newGoal.value
     }
 }

@@ -11,6 +11,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import dev.mpardo.dailycaloriecounter.R
+import dev.mpardo.dailycaloriecounter.model.*
 import dev.mpardo.dailycaloriecounter.ui.component.NumberInput
 import dev.mpardo.dailycaloriecounter.ui.component.NumberInputValue
 import dev.mpardo.dailycaloriecounter.ui.component.TextInputSelection
@@ -19,48 +20,55 @@ import dev.mpardo.dailycaloriecounter.ui.component.TextInputSelection
 fun SettingsScreen(
     dailyCalorieGoal: Int,
     dailyProteinGoal: Int,
-    onCalorieGoalUpdate: (Int) -> Unit,
-    onProteinGoalUpdate: (Int) -> Unit,
+    dailyFatsGoal: Int,
+    dailyCarbohydratesGoal: Int,
+    dailySaltGoal: Int,
+    onCalorieGoalUpdate: (Energy) -> Unit,
+    onProteinGoalUpdate: (Proteins) -> Unit,
+    onFatsGoalUpdate: (Fats) -> Unit,
+    onCarbohydratesGoalUpdate: (Carbohydrates) -> Unit,
+    onSaltGoalUpdate: (Salt) -> Unit,
+    onAddCustomCalorieAmount: (Int) -> Unit,
 ) {
     var showDailyCalorieGoalDialog by remember { mutableStateOf(false) }
     var showDailyProteinGoalDialog by remember { mutableStateOf(false) }
+    var showDailyFatsGoalDialog by remember { mutableStateOf(false) }
+    var showDailyCarbohydratesGoalDialog by remember { mutableStateOf(false) }
+    var showDailySaltGoalDialog by remember { mutableStateOf(false) }
     
     Column {
-        SettingsItem {
-            Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(
-                    stringResource(R.string.calorie_goal_label), modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .padding(8.dp)
-                        .fillMaxWidth(0.6f)
-                )
-                TextButton({ showDailyCalorieGoalDialog = true }, modifier = Modifier.align(Alignment.CenterVertically)) {
-                    Text("$dailyCalorieGoal kcal")
-                }
-            }
-        }
+        GoalItem(name = stringResource(R.string.calorie_goal_label),
+                 value = dailyCalorieGoal,
+                 suffix = "kcal",
+                 onGoalClick = { showDailyCalorieGoalDialog = true })
         
-        SettingsItem {
-            Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(
-                    stringResource(R.string.protein_goal_label), modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .padding(8.dp)
-                        .fillMaxWidth(0.6f)
-                )
-                TextButton({ showDailyProteinGoalDialog = true }, modifier = Modifier.align(Alignment.CenterVertically)) {
-                    Text("$dailyProteinGoal g")
-                }
-            }
-        }
+        GoalItem(name = stringResource(R.string.protein_goal_label),
+                 value = dailyProteinGoal,
+                 suffix = "g",
+                 onGoalClick = { showDailyProteinGoalDialog = true })
+        
+        GoalItem(name = stringResource(R.string.fats_goal_label),
+                 value = dailyFatsGoal,
+                 suffix = "g",
+                 onGoalClick = { showDailyFatsGoalDialog = true })
+        
+        GoalItem(name = stringResource(R.string.carbohydrates_goal_label),
+                 value = dailyCarbohydratesGoal,
+                 suffix = "g",
+                 onGoalClick = { showDailyCarbohydratesGoalDialog = true })
+        
+        GoalItem(name = stringResource(R.string.salt_goal_label),
+                 value = dailySaltGoal,
+                 suffix = "g",
+                 onGoalClick = { showDailySaltGoalDialog = true })
     }
     
     if (showDailyCalorieGoalDialog) {
-        EditDailyGoalDialog(
+        SimpleNumberDialog(
             dailyCalorieGoal,
             onDismiss = { showDailyCalorieGoalDialog = false },
-            onEdit = {
-                onCalorieGoalUpdate(it)
+            onValueSubmit = {
+                onCalorieGoalUpdate(Energy(it))
                 showDailyCalorieGoalDialog = false
             },
             label = stringResource(R.string.calorie_goal_label),
@@ -68,37 +76,100 @@ fun SettingsScreen(
     }
     
     if (showDailyProteinGoalDialog) {
-        EditDailyGoalDialog(
+        SimpleNumberDialog(
             dailyProteinGoal,
             onDismiss = { showDailyProteinGoalDialog = false },
-            onEdit = {
-                onProteinGoalUpdate(it)
+            onValueSubmit = {
+                onProteinGoalUpdate(Proteins(it))
                 showDailyProteinGoalDialog = false
             },
             label = stringResource(R.string.protein_goal_label),
         )
     }
+    
+    if (showDailyFatsGoalDialog) {
+        SimpleNumberDialog(
+            dailyFatsGoal,
+            onDismiss = { showDailyFatsGoalDialog = false },
+            onValueSubmit = {
+                onFatsGoalUpdate(Fats(it))
+                showDailyFatsGoalDialog = false
+            },
+            label = stringResource(R.string.fats_goal_label),
+        )
+    }
+    
+    if (showDailyCarbohydratesGoalDialog) {
+        SimpleNumberDialog(
+            dailyCarbohydratesGoal,
+            onDismiss = { showDailyCarbohydratesGoalDialog = false },
+            onValueSubmit = {
+                onCarbohydratesGoalUpdate(Carbohydrates(it))
+                showDailyCarbohydratesGoalDialog = false
+            },
+            label = stringResource(R.string.carbohydrates_goal_label),
+        )
+    }
+    
+    if (showDailySaltGoalDialog) {
+        SimpleNumberDialog(
+            dailySaltGoal,
+            onDismiss = { showDailySaltGoalDialog = false },
+            onValueSubmit = {
+                onSaltGoalUpdate(Salt(it))
+                showDailySaltGoalDialog = false
+            },
+            label = stringResource(R.string.salt_goal_label),
+        )
+    }
+    
+    var showCustomEnergyDialog by remember { mutableStateOf(false) }
+    
+    Column(
+        verticalArrangement = Arrangement.Bottom, modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
+            TextButton(onClick = { showCustomEnergyDialog = true }) {
+                Text(text = stringResource(R.string.add_custom_calorie_amount_label))
+            }
+        }
+    }
+    
+    if (showCustomEnergyDialog) {
+        SimpleNumberDialog(value = 0, label = stringResource(R.string.energy_name), onDismiss = { showCustomEnergyDialog = false }, onValueSubmit = {
+            showCustomEnergyDialog = false
+            onAddCustomCalorieAmount(it)
+        })
+    }
 }
 
 @Composable
-fun SettingsItem(content: @Composable () -> Unit) {
+fun GoalItem(name: String, value: Int, suffix: String, onGoalClick: () -> Unit) {
     Card(
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth()
     ) {
-        content()
+        Row(horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(
+                name, modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .padding(8.dp)
+                    .fillMaxWidth(0.6f)
+            )
+            TextButton(onGoalClick, modifier = Modifier.align(Alignment.CenterVertically)) {
+                Text("$value$suffix")
+            }
+        }
     }
 }
 
 @Composable
-fun EditDailyGoalDialog(
-    goal: Int,
-    label: String,
-    onDismiss: () -> Unit = {},
-    onEdit: (Int) -> Unit = {}
-) {
-    var newGoal by remember { mutableStateOf(NumberInputValue(goal)) }
+fun SimpleNumberDialog(value: Int, label: String, onDismiss: () -> Unit = {}, onValueSubmit: (Int) -> Unit = {}) {
+    var newGoal by remember { mutableStateOf(NumberInputValue(value)) }
     
     Dialog(onDismissRequest = onDismiss) {
         Card(
@@ -108,16 +179,16 @@ fun EditDailyGoalDialog(
                 NumberInput(
                     value = newGoal,
                     onValueChange = { newGoal = it },
-                    onSubmit = { onEdit(it.toInt()) },
+                    onSubmit = { onValueSubmit(it.toInt()) },
                     label = { Text(label) },
-                    requestFocus = true,
+                    focused = true,
                     initialSelection = TextInputSelection.Full,
                     keyboardIcon = ImeAction.Done
                 )
                 Spacer(Modifier.height(16.dp))
                 Row(modifier = Modifier.align(Alignment.End)) {
                     TextButton(onDismiss) { Text(stringResource(R.string.cancel), color = contentColorFor(MaterialTheme.colors.background)) }
-                    TextButton({ onEdit(newGoal.value.toInt()) }) { Text(stringResource(R.string.edit)) }
+                    TextButton({ onValueSubmit(newGoal.value.toInt()) }) { Text(stringResource(R.string.submit)) }
                 }
             }
         }

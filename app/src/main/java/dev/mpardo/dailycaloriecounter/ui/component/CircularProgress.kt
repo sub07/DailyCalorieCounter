@@ -8,6 +8,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.*
@@ -25,16 +26,28 @@ fun CircularProgress(
     textColor: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current),
     barColor: Color = MaterialTheme.colors.primary,
     barBackgroundColor: Color = MaterialTheme.colors.background,
+    stroke: Dp = 30.dp,
 ) {
     val textMeasurer = rememberTextMeasurer()
     
     Canvas(modifier = Modifier.size(size)) {
         drawCircle(
-            color = barBackgroundColor, style = Stroke(width = 30f)
+            radius = this.size.height / 2f - stroke.value / 2f,
+            color = barBackgroundColor,
+            style = Stroke(width = stroke.value)
         )
         
+        val arcOriginX = stroke.value
+        val arcOriginY = stroke.value
+        
         drawArc(
-            color = barColor, startAngle = -90f, sweepAngle = progress * 360f, useCenter = false, style = Stroke(width = 30f)
+            color = barColor,
+            topLeft = Offset(arcOriginX, arcOriginY) / 2f,
+            size = Size(this.size.width - arcOriginX, this.size.height - arcOriginY),
+            startAngle = -90f,
+            sweepAngle = progress * 360f,
+            useCenter = false,
+            style = Stroke(width = stroke.value),
         )
         
         text?.let {

@@ -1,7 +1,7 @@
 package dev.mpardo.dailycaloriecounter.repository
 
 import android.content.SharedPreferences
-import dev.mpardo.dailycaloriecounter.model.FoodEntry
+import dev.mpardo.dailycaloriecounter.model.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -17,17 +17,23 @@ private const val FoodEntryNextIdKey = "dev.mpardo.dailycaloriecoutner.FoodEntry
 class SharedPreferenceFoodEntryRepository : FoodEntryRepository, KoinComponent {
     
     private val sharedPreferences by inject<SharedPreferences>()
+    
     @Serializable
     data class FoodEntryPref(
         val id: Long,
         var name: String,
-        var calorieFor100g: Int,
+        var energy: Int,
         var protein: Int,
+        var fats: Int,
+        var salt: Int,
+        var carbohydrates: Int,
     ) {
-        fun into() = FoodEntry(id, name, calorieFor100g, protein)
+        fun into() = FoodEntry(id, name, Energy(energy), Proteins(protein), Fats(fats), Carbohydrates(carbohydrates), Salt(salt))
         
         companion object {
-            fun from(entry: FoodEntry) = FoodEntryPref(entry.id, entry.name, entry.calorieFor100g, entry.protein)
+            fun from(entry: FoodEntry) = FoodEntryPref(
+                entry.id, entry.name, entry.energy.value, entry.proteins.value, entry.fats.value, entry.salt.value, entry.carbohydrates.value
+            )
         }
     }
     

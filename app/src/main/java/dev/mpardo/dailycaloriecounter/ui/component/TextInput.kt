@@ -62,9 +62,10 @@ fun TextInput(
     shape: Shape = TextFieldDefaults.OutlinedTextFieldShape,
     colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(),
     initialSelection: TextInputSelection = TextInputSelection.None,
-    requestFocus: Boolean = false,
+    focused: Boolean = false,
     onSubmit: ((String) -> Unit)? = null,
     keyboardIcon: ImeAction = ImeAction.Done,
+    validation: (TextFieldValue) -> Boolean = { true },
 ) {
     check(keyboardIcon != ImeAction.None) { "Don't set keyboardIcon to None, on this single line text field and None correspond to Enter key" }
     val fr = remember { FocusRequester() }
@@ -78,7 +79,6 @@ fun TextInput(
     
     if (!initialSelectionHandled) {
         onValueChange(value.copy(selection = initialSelection.toTextRange(value.text)))
-        @Suppress("UNUSED_VALUE")
         initialSelectionHandled = true
     }
     
@@ -96,9 +96,16 @@ fun TextInput(
         { onValueChange(it) }
     }
     
+    var isInputValid by remember {
+        mutableStateOf(validation(value))
+    }
+    
     OutlinedTextField(
         value = value,
-        onValueChange = onValChange,
+        onValueChange = {
+            onValChange(it)
+            isInputValid = validation(it)
+        },
         modifier = modifier.focusRequester(fr),
         enabled = enabled,
         readOnly = readOnly,
@@ -107,7 +114,7 @@ fun TextInput(
         placeholder = placeholder,
         leadingIcon = leadingIcon,
         trailingIcon = trailingIcon,
-        isError = isError,
+        isError = isError || !isInputValid,
         visualTransformation = visualTransformation,
         keyboardOptions = keyboardOptions.copy(imeAction = keyboardIcon),
         keyboardActions = keyboardActions ?: KeyboardActions(),
@@ -117,9 +124,9 @@ fun TextInput(
         colors = colors,
     )
     
-    if (requestFocus) {
+    if (focused) {
         LaunchedEffect(Unit) {
-            delay(100)
+            delay(150)
             fr.requestFocus()
         }
     }

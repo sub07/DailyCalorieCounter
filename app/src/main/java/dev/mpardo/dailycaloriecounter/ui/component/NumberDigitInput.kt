@@ -11,10 +11,12 @@ fun NumberDigitInput(
     nbDigit: Int,
 ) {
     var valueStr = value.toString()
+    
+    check(valueStr.length <= nbDigit) { "value($value) is too big for $nbDigit digits" }
+    
     while (valueStr.length != nbDigit) {
         valueStr = "0$valueStr"
     }
-    check(valueStr.length <= nbDigit) { "value($value) is too big for $nbDigit digits" }
     
     val digits = remember {
         Array(nbDigit) {

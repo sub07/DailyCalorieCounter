@@ -22,6 +22,15 @@ class FoodRecordViewModel : ViewModel(), KoinComponent {
     var totalProteinRecorded by mutableStateOf(0)
         private set
     
+    var totalFatsRecorded by mutableStateOf(0)
+        private set
+    
+    var totalCarbohydratesRecorded by mutableStateOf(0)
+        private set
+    
+    var totalSaltRecorded by mutableStateOf(0)
+        private set
+    
     init {
         refresh()
     }
@@ -38,12 +47,26 @@ class FoodRecordViewModel : ViewModel(), KoinComponent {
     
     fun deleteAll() {
         foodRecordRepository.deleteAll()
+        clearCustomEnergyFood()
+        refresh()
+    }
+    
+    fun addCustomEnergyRecord(amount: Int) {
+        foodRecordRepository.addCustomEnergyRecord(amount)
+        refresh()
+    }
+    
+    fun clearCustomEnergyFood() {
+        foodRecordRepository.clearCustomEnergyRecord()
         refresh()
     }
     
     private fun refresh() {
         records = foodRecordRepository.all.sortedBy { it.date }
-        totalCalorieRecorded = records.sumOf { it.mass * (it.food.calorieFor100g / 100.0) }.toInt()
-        totalProteinRecorded = records.sumOf { it.mass * (it.food.protein / 100.0) }.toInt()
+        totalCalorieRecorded = records.sumOf { it.mass * (it.food.energy.value / 100.0) }.toInt() + foodRecordRepository.customEnergyAmount
+        totalProteinRecorded = records.sumOf { it.mass * (it.food.proteins.value / 100.0) }.toInt()
+        totalFatsRecorded = records.sumOf { it.mass * (it.food.fats.value / 100.0) }.toInt()
+        totalCarbohydratesRecorded = records.sumOf { it.mass * (it.food.carbohydrates.value / 100.0) }.toInt()
+        totalSaltRecorded = records.sumOf { it.mass * (it.food.salt.value / 100.0) }.toInt()
     }
 }

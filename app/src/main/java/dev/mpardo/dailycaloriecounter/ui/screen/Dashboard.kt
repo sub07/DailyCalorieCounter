@@ -18,20 +18,24 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import dev.mpardo.dailycaloriecounter.R
 import dev.mpardo.dailycaloriecounter.model.FoodEntry
 import dev.mpardo.dailycaloriecounter.model.FoodRecord
+import dev.mpardo.dailycaloriecounter.model.Goals
 import dev.mpardo.dailycaloriecounter.ui.component.*
 import java.time.Instant
 
 @Composable
 fun DashboardScreen(
-    dailyCalorieGoal: Int,
-    dailyProteinGoal: Int,
+    dailyGoals: Goals,
     totalCalorieRecorded: Int,
     totalProteinRecorded: Int,
+    totalFatsRecorded: Int,
+    totalCarbohydratesRecorded: Int,
+    totalSaltRecorded: Int,
     foodEntries: List<FoodEntry>,
     foodEntryUses: Map<FoodEntry, Int>,
     onAddFoodUse: (FoodEntry) -> Unit,
@@ -49,20 +53,19 @@ fun DashboardScreen(
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(stringResource(R.string.dashboard_left), style = MaterialTheme.typography.h6, modifier = Modifier.padding(bottom = 8.dp))
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp), horizontalArrangement = Arrangement.Center
+                    modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
                 ) {
                     val calorieRatio by animateFloatAsState(
-                        targetValue = (totalCalorieRecorded / dailyCalorieGoal.toFloat()).coerceIn(0f, 1f),
+                        targetValue = (totalCalorieRecorded / dailyGoals.energy.value.toFloat()).coerceIn(0f, 1f),
                         animationSpec = tween(durationMillis = 1000, delayMillis = 40, easing = FastOutSlowInEasing)
                     )
                     CircularProgress(
                         progress = calorieRatio,
-                        size = 128.dp,
-                        text = stringResource(R.string.dashboard_kcal_left, (dailyCalorieGoal - totalCalorieRecorded).coerceAtLeast(0), "\n"),
-                        barColor = if (totalCalorieRecorded > dailyCalorieGoal) MaterialTheme.colors.error else MaterialTheme.colors.primary,
-                        textColor = if (totalCalorieRecorded > dailyCalorieGoal) MaterialTheme.colors.error else MaterialTheme.colors.primary,
+                        size = 150.dp,
+                        stroke = 40.dp,
+                        text = stringResource(R.string.dashboard_kcal_left, (dailyGoals.energy.value - totalCalorieRecorded).coerceAtLeast(0), "\n"),
+                        barColor = if (totalCalorieRecorded > dailyGoals.energy.value) MaterialTheme.colors.error else MaterialTheme.colors.primary,
+                        textColor = if (totalCalorieRecorded > dailyGoals.energy.value) MaterialTheme.colors.error else MaterialTheme.colors.primary,
                     )
                 }
                 Text(
@@ -71,23 +74,17 @@ fun DashboardScreen(
                         .align(Alignment.CenterHorizontally)
                         .padding(top = 8.dp, bottom = 16.dp)
                 )
-                Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
-                    Column {
-                        val proteinRatio by animateFloatAsState(
-                            targetValue = (totalProteinRecorded / dailyProteinGoal.toFloat()).coerceIn(0f, 1f),
-                            animationSpec = tween(durationMillis = 1000, delayMillis = 40, easing = FastOutSlowInEasing)
-                        )
-                        CircularProgress(
-                            progress = proteinRatio,
-                            size = 64.dp,
-                            barColor = if (totalProteinRecorded > dailyProteinGoal) MaterialTheme.colors.error else MaterialTheme.colors.secondary,
-                            textColor = if (totalProteinRecorded > dailyProteinGoal) MaterialTheme.colors.error else MaterialTheme.colors.secondary,
-                            text = stringResource(R.string.protein_left, (dailyProteinGoal - totalProteinRecorded).coerceAtLeast(0), "\n"),
-                            textStyle = MaterialTheme.typography.body1.copy(color = MaterialTheme.colors.secondary, textAlign = TextAlign.Center)
-                        )
-                        Text(text = "Proteins")
-                    }
+                Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp)) {
+                    SubCharacteristics(totalProteinRecorded, dailyGoals.protein.value, stringResource(R.string.protein_name))
+                    SubCharacteristics(totalFatsRecorded, dailyGoals.fats.value, stringResource(R.string.fats_name))
                 }
+                Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
+                    SubCharacteristics(totalCarbohydratesRecorded, dailyGoals.carbohydrates.value, stringResource(R.string.carbohydrate_name))
+                    SubCharacteristics(totalSaltRecorded, dailyGoals.salt.value, stringResource(R.string.salt_name))
+                }
+                
             }
         }
         
@@ -124,6 +121,31 @@ fun DashboardScreen(
             foodEntries,
             foodEntryUses,
         )
+    }
+}
+
+@Composable
+fun SubCharacteristics(recorded: Int, goal: Int, label: String) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        val ratio by animateFloatAsState(
+            targetValue = (recorded / goal.toFloat()).coerceIn(0f, 1f),
+            animationSpec = tween(durationMillis = 1000, delayMillis = 40, easing = FastOutSlowInEasing)
+        )
+        val progressSize = 80.dp
+        val maxTextSize = 150.dp
+        Box(modifier = Modifier.padding(horizontal = (maxTextSize - progressSize) / 2)) {
+            CircularProgress(
+                progress = ratio,
+                size = progressSize,
+                stroke = 20.dp,
+                barColor = if (recorded > goal) MaterialTheme.colors.error else MaterialTheme.colors.secondary,
+                textColor = if (recorded > goal) MaterialTheme.colors.error else MaterialTheme.colors.secondary,
+                text = stringResource(R.string.characteristic_left, (goal - recorded).coerceAtLeast(0), "\n"),
+                textStyle = MaterialTheme.typography.body1.copy(color = MaterialTheme.colors.secondary, textAlign = TextAlign.Center)
+            )
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(label, textAlign = TextAlign.Center, softWrap = false, overflow = TextOverflow.Visible)
     }
 }
 
@@ -168,6 +190,7 @@ fun AddFoodRecordDialog(
                                         it.name,
                                         modifier = Modifier
                                             .padding(horizontal = 8.dp, vertical = 16.dp)
+                                            .fillMaxSize()
                                             .clickable {
                                                 food = it
                                                 search = search.copy(text = it.name)
@@ -185,7 +208,7 @@ fun AddFoodRecordDialog(
                         onValueChange = { mass = it },
                         label = { Text(stringResource(R.string.dashboard_dialog_mass_label)) },
                         modifier = Modifier.fillMaxWidth(),
-                        requestFocus = true,
+                        focused = true,
                         initialSelection = TextInputSelection.Full,
                         onSubmit = {
                             food?.let {
@@ -200,7 +223,6 @@ fun AddFoodRecordDialog(
                         TextButton(enabled = food != null, onClick = {
                             food?.let {
                                 onAddRecord(FoodRecord(-1, food!!, mass.value.toInt(), Instant.now().epochSecond))
-                                
                             }
                         }) { Text(stringResource(R.string.add)) }
                     }

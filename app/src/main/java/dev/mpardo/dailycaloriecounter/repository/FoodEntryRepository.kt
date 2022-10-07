@@ -22,11 +22,11 @@ class SharedPreferenceFoodEntryRepository : FoodEntryRepository, KoinComponent {
     data class FoodEntryPref(
         val id: Long,
         var name: String,
-        var energy: Int,
-        var protein: Int,
-        var fats: Int,
-        var salt: Int,
-        var carbohydrates: Int,
+        var energy: Float,
+        var protein: Float,
+        var fats: Float,
+        var salt: Float,
+        var carbohydrates: Float,
     ) {
         fun into() = FoodEntry(id, name, Energy(energy), Proteins(protein), Fats(fats), Carbohydrates(carbohydrates), Salt(salt))
         

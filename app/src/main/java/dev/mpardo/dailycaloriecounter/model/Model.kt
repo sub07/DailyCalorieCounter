@@ -6,19 +6,20 @@ import kotlinx.parcelize.Parcelize
 sealed interface FoodCharacteristic : Parcelable
 
 @Parcelize
-class Energy(var value: Int) : FoodCharacteristic
+data class Energy(var value: Float) : FoodCharacteristic
 
 @Parcelize
-class Proteins(var value: Int) : FoodCharacteristic
+data class Proteins(var value: Float) : FoodCharacteristic
 
 @Parcelize
-class Fats(var value: Int) : FoodCharacteristic
+data class Fats(var value: Float) : FoodCharacteristic
 
 @Parcelize
-class Salt(var value: Int) : FoodCharacteristic
+data class Salt(var value: Float) : FoodCharacteristic
 
 @Parcelize
-class Carbohydrates(var value: Int) : FoodCharacteristic
+data class Carbohydrates(var value: Float) : FoodCharacteristic
+
 @Parcelize
 data class FoodEntry(
     val id: Long,

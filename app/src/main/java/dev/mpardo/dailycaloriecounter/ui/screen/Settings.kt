@@ -8,6 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import dev.mpardo.dailycaloriecounter.R
@@ -68,7 +69,7 @@ fun SettingsScreen(
             dailyCalorieGoal,
             onDismiss = { showDailyCalorieGoalDialog = false },
             onValueSubmit = {
-                onCalorieGoalUpdate(Energy(it))
+                onCalorieGoalUpdate(Energy(it.toFloat()))
                 showDailyCalorieGoalDialog = false
             },
             label = stringResource(R.string.calorie_goal_label),
@@ -80,7 +81,7 @@ fun SettingsScreen(
             dailyProteinGoal,
             onDismiss = { showDailyProteinGoalDialog = false },
             onValueSubmit = {
-                onProteinGoalUpdate(Proteins(it))
+                onProteinGoalUpdate(Proteins(it.toFloat()))
                 showDailyProteinGoalDialog = false
             },
             label = stringResource(R.string.protein_goal_label),
@@ -92,7 +93,7 @@ fun SettingsScreen(
             dailyFatsGoal,
             onDismiss = { showDailyFatsGoalDialog = false },
             onValueSubmit = {
-                onFatsGoalUpdate(Fats(it))
+                onFatsGoalUpdate(Fats(it.toFloat()))
                 showDailyFatsGoalDialog = false
             },
             label = stringResource(R.string.fats_goal_label),
@@ -104,7 +105,7 @@ fun SettingsScreen(
             dailyCarbohydratesGoal,
             onDismiss = { showDailyCarbohydratesGoalDialog = false },
             onValueSubmit = {
-                onCarbohydratesGoalUpdate(Carbohydrates(it))
+                onCarbohydratesGoalUpdate(Carbohydrates(it.toFloat()))
                 showDailyCarbohydratesGoalDialog = false
             },
             label = stringResource(R.string.carbohydrates_goal_label),
@@ -116,7 +117,7 @@ fun SettingsScreen(
             dailySaltGoal,
             onDismiss = { showDailySaltGoalDialog = false },
             onValueSubmit = {
-                onSaltGoalUpdate(Salt(it))
+                onSaltGoalUpdate(Salt(it.toFloat()))
                 showDailySaltGoalDialog = false
             },
             label = stringResource(R.string.salt_goal_label),
@@ -160,15 +161,18 @@ fun GoalItem(name: String, value: Int, suffix: String, onGoalClick: () -> Unit) 
                     .padding(8.dp)
                     .fillMaxWidth(0.6f)
             )
-            TextButton(onGoalClick, modifier = Modifier.align(Alignment.CenterVertically)) {
-                Text("$value$suffix")
+            TextButton(
+                onGoalClick,
+                modifier = Modifier.align(Alignment.CenterVertically),
+            ) {
+                Text("$value$suffix", textAlign = TextAlign.End)
             }
         }
     }
 }
 
 @Composable
-fun SimpleNumberDialog(value: Int, label: String, onDismiss: () -> Unit = {}, onValueSubmit: (Int) -> Unit = {}) {
+fun SimpleNumberDialog(value: Number, label: String, onDismiss: () -> Unit = {}, onValueSubmit: (Int) -> Unit = {}) {
     var newGoal by remember { mutableStateOf(NumberInputValue(value)) }
     
     Dialog(onDismissRequest = onDismiss) {

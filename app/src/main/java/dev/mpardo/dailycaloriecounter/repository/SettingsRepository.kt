@@ -15,11 +15,11 @@ private const val DailyCarbohydratesGoalKey = "dev.mpardo.dailycaloriecounter.Da
 class SharedPreferenceSettingsRepository : KoinComponent {
     private val sharedPreferences by inject<SharedPreferences>()
     
-    private fun put(key: String, v: Int) {
-        sharedPreferences.edit().putInt(key, v).apply()
+    private fun put(key: String, v: Float) {
+        sharedPreferences.edit().putFloat(key, v).apply()
     }
     
-    private fun get(key: String, default: Int = 0) = sharedPreferences.getInt(key, default)
+    private fun get(key: String, default: Float = 0f) = sharedPreferences.getFloat(key, default)
     
     var dailyCalorieGoal: Energy
         get() = Energy(get(DailyCalorieGoalKey))

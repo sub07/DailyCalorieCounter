@@ -17,14 +17,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 
 class NumberInputValue(internal val textValue: TextFieldValue) {
-    val value: Number get() = textValue.text.toLong()
+    val value: Number get() = textValue.text.toLongOrNull() ?: textValue.text.toDouble()
     val selection get() = textValue.selection
     val composition get() = textValue.composition
     
     constructor(number: Number, selection: TextRange = TextRange.Zero, composition: TextRange? = null) : this(
-        TextFieldValue(
-            number.toString(), selection, composition
-        )
+        TextFieldValue(number.toString(), selection, composition)
     )
     
     fun copy(
@@ -57,11 +55,17 @@ fun NumberInput(
     onSubmit: ((Number) -> Unit)? = null,
     keyboardIcon: ImeAction = ImeAction.Done,
     validation: (NumberInputValue) -> Boolean = { true },
+    allowFloat: Boolean = false,
 ) {
-    
     TextInput(
         value = value.textValue,
-        onValueChange = { it.text.toLongOrNull()?.let { _ -> onValueChange(NumberInputValue(it)) } },
+        onValueChange = {
+            if (allowFloat) {
+                it.text.toDoubleOrNull()?.let { _ -> onValueChange(NumberInputValue(it)) }
+            } else {
+                it.text.toLongOrNull()?.let { _ -> onValueChange(NumberInputValue(it)) }
+            }
+        },
         modifier = modifier,
         enabled = enabled,
         readOnly = readOnly,
@@ -79,8 +83,10 @@ fun NumberInput(
         focused = focused,
         initialSelection = initialSelection,
         onSubmit = {
-            onSubmit?.let { func ->
-                it.toLongOrNull()?.let(func)
+            if (allowFloat) {
+                onSubmit?.let { func -> it.toDoubleOrNull()?.let(func) }
+            } else {
+                onSubmit?.let { func -> it.toLongOrNull()?.let(func) }
             }
         },
         keyboardIcon = keyboardIcon,

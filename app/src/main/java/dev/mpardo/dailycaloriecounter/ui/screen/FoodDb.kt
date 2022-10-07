@@ -1,7 +1,6 @@
 package dev.mpardo.dailycaloriecounter.ui.screen
 
 import android.widget.Toast
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -35,7 +34,6 @@ fun FoodCalDbListScreen(
 ) {
     var showAddFoodDialog by remember { mutableStateOf(false) }
     var editedFood: FoodEntry? by remember { mutableStateOf(null) }
-    var showFoodInfoDialog: FoodEntry? by remember { mutableStateOf(null) }
     var showErrorToast: String? by remember { mutableStateOf(null) }
     
     if (foods.isEmpty()) {
@@ -52,12 +50,9 @@ fun FoodCalDbListScreen(
         }
     } else {
         Card(modifier = Modifier.padding(8.dp)) {
-            DividedLazyColumn(
-                list = foods, modifier = Modifier.padding(8.dp)
-            ) {
+            DividedLazyColumn(list = foods, modifier = Modifier.padding(8.dp)) {
                 FoodDbItem(
                     it,
-                    onNameClick = { showFoodInfoDialog = it },
                     onEditClick = {
                         showAddFoodDialog = true
                         editedFood = it
@@ -114,13 +109,14 @@ fun FoodCalDbListScreen(
 }
 
 @Composable
-fun FoodDbItem(item: FoodEntry, onEditClick: () -> Unit, onDeleteClick: () -> Unit, onNameClick: () -> Unit) {
+fun FoodDbItem(item: FoodEntry, onEditClick: () -> Unit, onDeleteClick: () -> Unit) {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Column(modifier = Modifier
-            .align(Alignment.CenterVertically)
-            .padding(8.dp)
-            .fillMaxWidth(0.7f)
-            .clickable { onNameClick() }) {
+        Column(
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .padding(8.dp)
+                .fillMaxWidth(0.7f)
+        ) {
             Text(
                 item.name,
                 style = MaterialTheme.typography.body1,
@@ -143,19 +139,19 @@ fun EditFoodDialog(
 ) {
     var name by remember { mutableStateOf(TextFieldValue(foodEntry?.name ?: "")) }
     
-    var energy by remember { mutableStateOf(NumberInputValue(foodEntry?.energy?.value ?: 0)) }
+    var energy by remember { mutableStateOf(NumberInputValue(foodEntry?.energy?.value ?: 0f)) }
     var energyFocused by remember { mutableStateOf(false) }
     
-    var proteins by remember { mutableStateOf(NumberInputValue(foodEntry?.proteins?.value ?: 0)) }
+    var proteins by remember { mutableStateOf(NumberInputValue(foodEntry?.proteins?.value ?: 0f)) }
     var proteinsFocused by remember { mutableStateOf(false) }
     
-    var fats by remember { mutableStateOf(NumberInputValue(foodEntry?.fats?.value ?: 0)) }
+    var fats by remember { mutableStateOf(NumberInputValue(foodEntry?.fats?.value ?: 0f)) }
     var fatsFocused by remember { mutableStateOf(false) }
     
-    var carbohydrates by remember { mutableStateOf(NumberInputValue(foodEntry?.carbohydrates?.value ?: 0)) }
+    var carbohydrates by remember { mutableStateOf(NumberInputValue(foodEntry?.carbohydrates?.value ?: 0f)) }
     var carbohydratesFocused by remember { mutableStateOf(false) }
     
-    var salt by remember { mutableStateOf(NumberInputValue(foodEntry?.salt?.value ?: 0)) }
+    var salt by remember { mutableStateOf(NumberInputValue(foodEntry?.salt?.value ?: 0f)) }
     var saltFocused by remember { mutableStateOf(false) }
     
     var canConfirm by remember { mutableStateOf(foodEntry?.name?.isNotEmpty() ?: false) }
@@ -166,20 +162,20 @@ fun EditFoodDialog(
                 FoodEntry(
                     -1,
                     name.text,
-                    Energy(energy.value.toInt()),
-                    Proteins(proteins.value.toInt()),
-                    Fats(fats.value.toInt()),
-                    Carbohydrates(carbohydrates.value.toInt()),
-                    Salt(salt.value.toInt()),
+                    Energy(energy.value.toFloat()),
+                    Proteins(proteins.value.toFloat()),
+                    Fats(fats.value.toFloat()),
+                    Carbohydrates(carbohydrates.value.toFloat()),
+                    Salt(salt.value.toFloat()),
                 )
             )
         } else {
             val editedFood = foodEntry.copy(
-                energy = Energy(energy.value.toInt()),
-                proteins = Proteins(proteins.value.toInt()),
-                fats = Fats(fats.value.toInt()),
-                carbohydrates = Carbohydrates(carbohydrates.value.toInt()),
-                salt = Salt(salt.value.toInt()),
+                energy = Energy(energy.value.toFloat()),
+                proteins = Proteins(proteins.value.toFloat()),
+                fats = Fats(fats.value.toFloat()),
+                carbohydrates = Carbohydrates(carbohydrates.value.toFloat()),
+                salt = Salt(salt.value.toFloat()),
             )
             onEdit(editedFood)
         }
@@ -208,7 +204,7 @@ fun EditFoodDialog(
                     value = energy,
                     onValueChange = {
                         energy = it
-                        canConfirm = it.value.toInt() >= 0
+                        canConfirm = it.value.toFloat() > 0
                     },
                     label = { Text(text = stringResource(R.string.energy_name)) },
                     validation = { it.value.toInt() >= 0 },
@@ -216,6 +212,7 @@ fun EditFoodDialog(
                     keyboardIcon = ImeAction.Next,
                     initialSelection = TextInputSelection.Full,
                     onSubmit = { proteinsFocused = true },
+                    allowFloat = true,
                 )
                 NumberInput(
                     value = proteins,
@@ -227,6 +224,7 @@ fun EditFoodDialog(
                     keyboardIcon = ImeAction.Next,
                     initialSelection = TextInputSelection.Full,
                     onSubmit = { fatsFocused = true },
+                    allowFloat = true,
                 )
                 NumberInput(
                     value = fats,
@@ -236,6 +234,7 @@ fun EditFoodDialog(
                     keyboardIcon = ImeAction.Next,
                     initialSelection = TextInputSelection.Full,
                     onSubmit = { carbohydratesFocused = true },
+                    allowFloat = true,
                 )
                 NumberInput(
                     value = carbohydrates,
@@ -245,6 +244,7 @@ fun EditFoodDialog(
                     keyboardIcon = ImeAction.Next,
                     initialSelection = TextInputSelection.Full,
                     onSubmit = { saltFocused = true },
+                    allowFloat = true,
                 )
                 NumberInput(
                     value = salt,
@@ -254,6 +254,7 @@ fun EditFoodDialog(
                     keyboardIcon = ImeAction.Done,
                     initialSelection = TextInputSelection.Full,
                     onSubmit = { submit() },
+                    allowFloat = true,
                 )
                 
                 Row(modifier = Modifier.align(Alignment.End)) {

@@ -56,14 +56,17 @@ fun DashboardScreen(
                     modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
                 ) {
                     val calorieRatio by animateFloatAsState(
-                        targetValue = (totalCalorieRecorded / dailyGoals.energy.value.toFloat()).coerceIn(0f, 1f),
+                        targetValue = (totalCalorieRecorded / dailyGoals.energy.value).coerceIn(0f, 1f),
                         animationSpec = tween(durationMillis = 1000, delayMillis = 40, easing = FastOutSlowInEasing)
                     )
                     CircularProgress(
                         progress = calorieRatio,
                         size = 150.dp,
                         stroke = 40.dp,
-                        text = stringResource(R.string.dashboard_kcal_left, (dailyGoals.energy.value - totalCalorieRecorded).coerceAtLeast(0), "\n"),
+                        text = stringResource(
+                            R.string.dashboard_kcal_left,
+                            (dailyGoals.energy.value - totalCalorieRecorded).coerceAtLeast(0f).toInt(), "\n"
+                        ),
                         barColor = if (totalCalorieRecorded > dailyGoals.energy.value) MaterialTheme.colors.error else MaterialTheme.colors.primary,
                         textColor = if (totalCalorieRecorded > dailyGoals.energy.value) MaterialTheme.colors.error else MaterialTheme.colors.primary,
                     )
@@ -74,9 +77,11 @@ fun DashboardScreen(
                         .align(Alignment.CenterHorizontally)
                         .padding(top = 8.dp, bottom = 16.dp)
                 )
-                Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp)) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp)
+                ) {
                     SubCharacteristics(totalProteinRecorded, dailyGoals.protein.value, stringResource(R.string.protein_name))
                     SubCharacteristics(totalFatsRecorded, dailyGoals.fats.value, stringResource(R.string.fats_name))
                 }
@@ -125,10 +130,10 @@ fun DashboardScreen(
 }
 
 @Composable
-fun SubCharacteristics(recorded: Int, goal: Int, label: String) {
+fun SubCharacteristics(recorded: Int, goal: Float, label: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         val ratio by animateFloatAsState(
-            targetValue = (recorded / goal.toFloat()).coerceIn(0f, 1f),
+            targetValue = (recorded / goal).coerceIn(0f, 1f),
             animationSpec = tween(durationMillis = 1000, delayMillis = 40, easing = FastOutSlowInEasing)
         )
         val progressSize = 80.dp
@@ -140,7 +145,7 @@ fun SubCharacteristics(recorded: Int, goal: Int, label: String) {
                 stroke = 20.dp,
                 barColor = if (recorded > goal) MaterialTheme.colors.error else MaterialTheme.colors.secondary,
                 textColor = if (recorded > goal) MaterialTheme.colors.error else MaterialTheme.colors.secondary,
-                text = stringResource(R.string.characteristic_left, (goal - recorded).coerceAtLeast(0), "\n"),
+                text = stringResource(R.string.characteristic_left, (goal - recorded).coerceAtLeast(0f).toInt(), "\n"),
                 textStyle = MaterialTheme.typography.body1.copy(color = MaterialTheme.colors.secondary, textAlign = TextAlign.Center)
             )
         }

@@ -21,35 +21,35 @@ class SettingsViewModel : ViewModel(), KoinComponent {
     val goals get() = settingsRepository.goals
     
     init {
-        dailyCalorieGoal = settingsRepository.dailyCalorieGoal.value
-        dailyProteinGoal = settingsRepository.dailyProteinGoal.value
-        dailyFatsGoal = settingsRepository.dailyFatsGoal.value
-        dailyCarbohydratesGoal = settingsRepository.dailyCarbohydratesGoal.value
-        dailySaltGoal = settingsRepository.dailySaltGoal.value
+        dailyCalorieGoal = settingsRepository.dailyCalorieGoal.value.toInt()
+        dailyProteinGoal = settingsRepository.dailyProteinGoal.value.toInt()
+        dailyFatsGoal = settingsRepository.dailyFatsGoal.value.toInt()
+        dailyCarbohydratesGoal = settingsRepository.dailyCarbohydratesGoal.value.toInt()
+        dailySaltGoal = settingsRepository.dailySaltGoal.value.toInt()
     }
     
     fun setNewDailyCalorieGoal(newGoal: Energy) {
         settingsRepository.dailyCalorieGoal = newGoal
-        dailyCalorieGoal = newGoal.value
+        dailyCalorieGoal = newGoal.value.toInt()
     }
     
     fun setNewDailyProteinGoal(newGoal: Proteins) {
         settingsRepository.dailyProteinGoal = newGoal
-        dailyProteinGoal = newGoal.value
+        dailyProteinGoal = newGoal.value.toInt()
     }
     
     fun setNewDailyFatsGoal(newGoal: Fats) {
         settingsRepository.dailyFatsGoal = newGoal
-        dailyFatsGoal = newGoal.value
+        dailyFatsGoal = newGoal.value.toInt()
     }
     
     fun setNewDailyCarbohydratesGoal(newGoal: Carbohydrates) {
         settingsRepository.dailyCarbohydratesGoal = newGoal
-        dailyCarbohydratesGoal = newGoal.value
+        dailyCarbohydratesGoal = newGoal.value.toInt()
     }
     
     fun setNewDailySaltGoal(newGoal: Salt) {
         settingsRepository.dailySaltGoal = newGoal
-        dailySaltGoal = newGoal.value
+        dailySaltGoal = newGoal.value.toInt()
     }
 }

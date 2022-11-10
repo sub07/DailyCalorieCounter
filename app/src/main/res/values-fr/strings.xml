@@ -39,4 +39,5 @@
     <string name="salt_goal_label">Objectif de sel quotidien</string>
     <string name="add_custom_calorie_amount_label">Ajouter des calories</string>
     <string name="submit">Valider</string>
+    <string name="kcal_label">%1$d kcal</string>
 </resources>

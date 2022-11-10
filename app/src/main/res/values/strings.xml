@@ -38,4 +38,5 @@
     <string name="salt_goal_label">Daily salt goal</string>
     <string name="add_custom_calorie_amount_label">Add custom calorie amount</string>
     <string name="submit">Submit</string>
+    <string name="kcal_label">%1$d kcal</string>
 </resources>

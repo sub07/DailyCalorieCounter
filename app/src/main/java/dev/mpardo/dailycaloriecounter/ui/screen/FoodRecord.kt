@@ -58,6 +58,10 @@ fun FoodRecordItem(
                 stringResource(R.string.records_mass, item.mass, item.food.name),
                 style = MaterialTheme.typography.body1,
             )
+            Text(
+                stringResource(R.string.kcal_label, (item.mass * (item.food.energy.value / 100f)).toInt()),
+                style = MaterialTheme.typography.caption,
+            )
         }
         Row {
             IconButton(onClick = onDelete) {

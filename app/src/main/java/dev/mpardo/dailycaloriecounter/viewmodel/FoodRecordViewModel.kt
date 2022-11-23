@@ -8,6 +8,7 @@ import dev.mpardo.dailycaloriecounter.model.FoodRecord
 import dev.mpardo.dailycaloriecounter.repository.FoodRecordRepository
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.time.Instant
 
 class FoodRecordViewModel : ViewModel(), KoinComponent {
     
@@ -29,6 +30,9 @@ class FoodRecordViewModel : ViewModel(), KoinComponent {
         private set
     
     var totalSaltRecorded by mutableStateOf(0)
+        private set
+    
+    var nbHourSinceFirstMeal by mutableStateOf(-1)
         private set
     
     init {
@@ -68,5 +72,10 @@ class FoodRecordViewModel : ViewModel(), KoinComponent {
         totalFatsRecorded = records.sumOf { it.mass * (it.food.fats.value / 100.0) }.toInt()
         totalCarbohydratesRecorded = records.sumOf { it.mass * (it.food.carbohydrates.value / 100.0) }.toInt()
         totalSaltRecorded = records.sumOf { it.mass * (it.food.salt.value / 100.0) }.toInt()
+        nbHourSinceFirstMeal = if (records.firstOrNull() == null) {
+            -1
+        } else {
+            (Instant.now().epochSecond - records.firstOrNull()!!.date).toInt() / 3600
+        }
     }
 }

@@ -19,7 +19,7 @@ class SharedPreferenceSettingsRepository : KoinComponent {
         sharedPreferences.edit().putFloat(key, v).apply()
     }
     
-    private fun get(key: String, default: Float = 0f) = sharedPreferences.getFloat(key, default)
+    private fun get(key: String, default: Float = 1f) = sharedPreferences.getFloat(key, default)
     
     var dailyCalorieGoal: Energy
         get() = Energy(get(DailyCalorieGoalKey))

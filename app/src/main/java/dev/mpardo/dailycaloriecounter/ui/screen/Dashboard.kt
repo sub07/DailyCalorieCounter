@@ -36,6 +36,7 @@ fun DashboardScreen(
     totalFatsRecorded: Int,
     totalCarbohydratesRecorded: Int,
     totalSaltRecorded: Int,
+    nbHourSinceFirstMeal: Int,
     foodEntries: List<FoodEntry>,
     foodEntryUses: Map<FoodEntry, Int>,
     onAddFoodUse: (FoodEntry) -> Unit,
@@ -45,10 +46,13 @@ fun DashboardScreen(
     var showAddFoodDialog by remember { mutableStateOf(false) }
     
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+        modifier = Modifier.fillMaxWidth().padding(16.dp)
     ) {
+        if (nbHourSinceFirstMeal != -1) {
+            Card(modifier = Modifier.padding(bottom = 16.dp).fillMaxWidth()) {
+                Text(modifier = Modifier.padding(16.dp), text = stringResource(R.string.day_started_hours, nbHourSinceFirstMeal))
+            }
+        }
         Card(modifier = Modifier.padding(bottom = 8.dp)) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(stringResource(R.string.dashboard_left), style = MaterialTheme.typography.h6, modifier = Modifier.padding(bottom = 8.dp))
@@ -64,8 +68,7 @@ fun DashboardScreen(
                         size = 150.dp,
                         stroke = 40.dp,
                         text = stringResource(
-                            R.string.dashboard_kcal_left,
-                            (dailyGoals.energy.value - totalCalorieRecorded).coerceAtLeast(0f).toInt(), "\n"
+                            R.string.dashboard_kcal_left, (dailyGoals.energy.value - totalCalorieRecorded).coerceAtLeast(0f).toInt(), "\n"
                         ),
                         barColor = if (totalCalorieRecorded > dailyGoals.energy.value) MaterialTheme.colors.error else MaterialTheme.colors.primary,
                         textColor = if (totalCalorieRecorded > dailyGoals.energy.value) MaterialTheme.colors.error else MaterialTheme.colors.primary,
@@ -73,14 +76,10 @@ fun DashboardScreen(
                 }
                 Text(
                     text = stringResource(R.string.dashboard_consumed_kcal, totalCalorieRecorded, "\n"),
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(top = 8.dp, bottom = 16.dp)
+                    modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 8.dp, bottom = 16.dp)
                 )
                 Row(
-                    horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp)
+                    horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
                 ) {
                     SubCharacteristics(totalProteinRecorded, dailyGoals.protein.value, stringResource(R.string.protein_name))
                     SubCharacteristics(totalFatsRecorded, dailyGoals.fats.value, stringResource(R.string.fats_name))
@@ -103,10 +102,7 @@ fun DashboardScreen(
     }
     
     Column(
-        verticalArrangement = Arrangement.Bottom, modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth()
-            .padding(24.dp)
+        verticalArrangement = Arrangement.Bottom, modifier = Modifier.fillMaxHeight().fillMaxWidth().padding(24.dp)
     ) {
         Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
             FloatingActionButton(onClick = { showAddFoodDialog = true }) {
@@ -168,9 +164,7 @@ fun AddFoodRecordDialog(
     Dialog(onDismissRequest = onDismiss) {
         Card(elevation = 8.dp, shape = RoundedCornerShape(12.dp)) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp), horizontalArrangement = Arrangement.Center
+                modifier = Modifier.fillMaxWidth().padding(8.dp), horizontalArrangement = Arrangement.Center
             ) {
                 Column {
                     TextInput(
@@ -180,12 +174,10 @@ fun AddFoodRecordDialog(
                         enabled = food == null,
                         label = { Text(stringResource(R.string.dashboard_dialog_food_label)) },
                         placeholder = { Text(stringResource(R.string.dashboard_dialog_food_placeholder)) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                food = null
-                                search = search.copy(text = "")
-                            },
+                        modifier = Modifier.fillMaxWidth().clickable {
+                            food = null
+                            search = search.copy(text = "")
+                        },
                     )
                     if (food == null) {
                         Card(elevation = 16.dp, modifier = Modifier.fillMaxWidth()) {
@@ -193,13 +185,10 @@ fun AddFoodRecordDialog(
                                 items(foodEntries.filter { it.name.startsWith(search.text, true) }.sortedByDescending { foodEntryUses[it] }) {
                                     Text(
                                         it.name,
-                                        modifier = Modifier
-                                            .padding(horizontal = 8.dp, vertical = 16.dp)
-                                            .fillMaxSize()
-                                            .clickable {
-                                                food = it
-                                                search = search.copy(text = it.name)
-                                            },
+                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp).fillMaxSize().clickable {
+                                            food = it
+                                            search = search.copy(text = it.name)
+                                        },
                                         color = MaterialTheme.colors.primary,
                                     )
                                 }

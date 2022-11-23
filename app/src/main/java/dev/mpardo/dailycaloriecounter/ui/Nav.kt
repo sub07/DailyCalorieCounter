@@ -66,28 +66,20 @@ fun CustomNavHost(
     Scaffold(bottomBar = {
         BottomNavigation {
             Screens.filter { it.icon != null }.forEach { screen ->
-                BottomNavigationItem(
-                    selected = navController.currentBackStackEntryAsState().value?.destination?.hierarchy?.any { it.route == screen.route } == true,
-                    icon = { Icon(screen.icon!!, "${getNameFromScreen(screen)} navigation button") },
-                    label = { Text(getNameFromScreen(screen)) },
-                    onClick = {
-                        navController.navigate(screen.route) {
-                            popUpTo(navController.graph.findStartDestination().id) { saveState = true }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    }
-                )
+                BottomNavigationItem(selected = navController.currentBackStackEntryAsState().value?.destination?.hierarchy?.any { it.route == screen.route } == true,
+                                     icon = { Icon(screen.icon!!, "${getNameFromScreen(screen)} navigation button") },
+                                     selectedContentColor = MaterialTheme.colors.primary,
+                                     unselectedContentColor = MaterialTheme.colors.onBackground,
+                                     label = { Text(getNameFromScreen(screen)) },
+                                     onClick = {
+                                         navController.navigate(screen.route) {
+                                             popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                                             launchSingleTop = true
+                                             restoreState = true
+                                         }
+                                     })
             }
         }
-    }, topBar = {
-        TopAppBar(title = {
-            Screens.forEach { screen ->
-                if (navController.currentBackStackEntryAsState().value?.destination?.hierarchy?.any { it.route == screen.route } == true) {
-                    Text(getNameFromScreen(screen))
-                }
-            }
-        })
     }) { innerPadding ->
         NavHost(
             modifier = modifier.padding(innerPadding),
@@ -109,35 +101,32 @@ fun CustomNavHost(
             }
             
             composable(Screen.Dashboard.route) {
-                DashboardScreen(
-                    dailyGoals = settingsViewModel.goals,
-                    totalCalorieRecorded = foodRecordViewModel.totalCalorieRecorded,
-                    totalProteinRecorded = foodRecordViewModel.totalProteinRecorded,
-                    totalFatsRecorded = foodRecordViewModel.totalFatsRecorded,
-                    totalCarbohydratesRecorded = foodRecordViewModel.totalCarbohydratesRecorded,
-                    totalSaltRecorded = foodRecordViewModel.totalSaltRecorded,
-                    foodEntries = foodEntryViewModel.calDb,
-                    foodEntryUses = foodEntryViewModel.foodDbCounter,
-                    onAddFoodUse = { foodEntryViewModel.addOneFoodEntryUse(it) },
-                    onAddRecord = { foodRecordViewModel.addFoodEntry(it) },
-                    onClearAllRecord = { foodRecordViewModel.deleteAll() }
-                )
+                DashboardScreen(dailyGoals = settingsViewModel.goals,
+                                totalCalorieRecorded = foodRecordViewModel.totalCalorieRecorded,
+                                totalProteinRecorded = foodRecordViewModel.totalProteinRecorded,
+                                totalFatsRecorded = foodRecordViewModel.totalFatsRecorded,
+                                totalCarbohydratesRecorded = foodRecordViewModel.totalCarbohydratesRecorded,
+                                totalSaltRecorded = foodRecordViewModel.totalSaltRecorded,
+                                nbHourSinceFirstMeal = foodRecordViewModel.nbHourSinceFirstMeal,
+                                foodEntries = foodEntryViewModel.calDb,
+                                foodEntryUses = foodEntryViewModel.foodDbCounter,
+                                onAddFoodUse = { foodEntryViewModel.addOneFoodEntryUse(it) },
+                                onAddRecord = { foodRecordViewModel.addFoodEntry(it) },
+                                onClearAllRecord = { foodRecordViewModel.deleteAll() })
             }
             
             composable(Screen.Settings.route) {
-                SettingsScreen(
-                    settingsViewModel.dailyCalorieGoal,
-                    settingsViewModel.dailyProteinGoal,
-                    settingsViewModel.dailyFatsGoal,
-                    settingsViewModel.dailyCarbohydratesGoal,
-                    settingsViewModel.dailySaltGoal,
-                    onCalorieGoalUpdate = { settingsViewModel.setNewDailyCalorieGoal(it) },
-                    onProteinGoalUpdate = { settingsViewModel.setNewDailyProteinGoal(it) },
-                    onFatsGoalUpdate = { settingsViewModel.setNewDailyFatsGoal(it) },
-                    onCarbohydratesGoalUpdate = { settingsViewModel.setNewDailyCarbohydratesGoal(it) },
-                    onSaltGoalUpdate = { settingsViewModel.setNewDailySaltGoal(it) },
-                    onAddCustomCalorieAmount = { foodRecordViewModel.addCustomEnergyRecord(it) }
-                )
+                SettingsScreen(settingsViewModel.dailyCalorieGoal,
+                               settingsViewModel.dailyProteinGoal,
+                               settingsViewModel.dailyFatsGoal,
+                               settingsViewModel.dailyCarbohydratesGoal,
+                               settingsViewModel.dailySaltGoal,
+                               onCalorieGoalUpdate = { settingsViewModel.setNewDailyCalorieGoal(it) },
+                               onProteinGoalUpdate = { settingsViewModel.setNewDailyProteinGoal(it) },
+                               onFatsGoalUpdate = { settingsViewModel.setNewDailyFatsGoal(it) },
+                               onCarbohydratesGoalUpdate = { settingsViewModel.setNewDailyCarbohydratesGoal(it) },
+                               onSaltGoalUpdate = { settingsViewModel.setNewDailySaltGoal(it) },
+                               onAddCustomCalorieAmount = { foodRecordViewModel.addCustomEnergyRecord(it) })
             }
         }
     }

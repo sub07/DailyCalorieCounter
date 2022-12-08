@@ -181,7 +181,7 @@ fun AddFoodRecordDialog(
                     )
                     if (food == null) {
                         Card(elevation = 16.dp, modifier = Modifier.fillMaxWidth()) {
-                            LazyColumn(modifier = Modifier.heightIn(max = 200.dp)) {
+                            LazyColumn(modifier = Modifier.heightIn(max = 216.dp)) {
                                 items(foodEntries.filter { it.name.startsWith(search.text, true) }.sortedByDescending { foodEntryUses[it] }) {
                                     Text(
                                         it.name,

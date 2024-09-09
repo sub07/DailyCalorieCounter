@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "dev.mpardo.dailycaloriecounter",
+  "applicationId": "me.mpardo.dailycaloriecounter",
   "variantName": "release",
   "elements": [
     {

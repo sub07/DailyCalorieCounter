@@ -9,7 +9,7 @@ android {
     compileSdk = 33
     
     defaultConfig {
-        applicationId = "dev.mpardo.dailycaloriecounter"
+        applicationId = "me.mpardo.dailycaloriecounter"
         minSdk = 31
         targetSdk = 33
         versionCode = 1
@@ -45,6 +45,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    namespace = "me.mpardo.dailycaloriecounter"
 }
 
 val composeVersion = "1.3.0-beta02"
